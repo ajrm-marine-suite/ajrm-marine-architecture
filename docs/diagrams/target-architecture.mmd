@@ -1,0 +1,69 @@
+flowchart LR
+  SK[("Signal K data model")]
+
+  subgraph Inputs["Inputs and replay"]
+    Live["Live NMEA / Signal K feeds"]
+    Sim["AJRM Marine Simulator"]
+    LoggerReplay["AJRM Marine Logger replay"]
+  end
+
+  subgraph Providers["Domain providers"]
+    Traffic["AJRM Marine Traffic"]
+    GPS["AJRM Marine GPS Integrity"]
+    InstrumentAlerts["AJRM Marine Instrument Alerts"]
+    Other["Other Signal K apps"]
+  end
+
+  Notifications["AJRM Marine Notifications"]
+  Audio["AJRM Marine Audio"]
+
+  subgraph Outputs["Audio and visual outputs"]
+    Display["AJRM Marine Display"]
+    Alerts["AJRM Marine Alerts"]
+    Console["AJRM Marine Console"]
+    DrPlotter["AJRM Marine DR Plotter"]
+    Instruments["AJRM Marine Instruments"]
+    DesktopPlayer["AJRM Marine Audio Player"]
+    OpenCpn["OpenCPN message panel"]
+    ServerSpeaker["Server speaker / stream"]
+  end
+
+  subgraph Recording["Recording and review"]
+    Logger["AJRM Marine Logger"]
+    Capture["AJRM Marine Capture"]
+    Snapshot["AJRM Marine Snapshot"]
+    Viewer["AJRM Marine Voyage Viewer"]
+    Bite["Console BITE"]
+  end
+
+  Live --> SK
+  Sim --> SK
+  LoggerReplay --> SK
+
+  SK --> Providers
+  Providers -->|"standard notifications + AJRM diagnostics"| SK
+
+  SK --> Notifications
+  Notifications -->|"active + recent projections"| Display
+  Notifications -->|"active + recent projections"| Alerts
+  Notifications -->|"OpenCPN message projection"| OpenCpn
+  Notifications -->|"audio delivery projection"| Audio
+
+  Traffic -->|"targets + profiles + audio policy + voyage state"| SK
+  GPS -->|"navigation integrity + DR diagnostics"| SK
+
+  Audio -->|"authoritative timeline + rendered assets"| DesktopPlayer
+  Audio --> ServerSpeaker
+
+  SK --> Display
+  SK --> DrPlotter
+  SK --> Instruments
+  SK --> Console
+
+  SK --> Logger
+  SK --> Capture
+  Snapshot --> Capture
+  Logger --> Viewer
+  Capture --> Viewer
+  Bite --> Capture
+  Bite --> Providers

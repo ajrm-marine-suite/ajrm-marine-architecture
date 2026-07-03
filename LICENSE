@@ -1,0 +1,39 @@
+AJRM Marine Architecture Documentation Licence
+
+Copyright (c) 2026 Anthony McDonald.
+
+All rights reserved except as expressly permitted below.
+
+Permission is granted to individuals and non-commercial Signal K users to read,
+download, copy, print, and share this architecture documentation for personal,
+educational, vessel-owner, testing, interoperability, and non-commercial Signal K
+community use.
+
+This permission includes reasonable quotation and linking for discussion,
+review, bug reports, support, and non-commercial documentation, provided that
+the source is acknowledged as AJRM Marine Architecture documentation.
+
+This permission does not include the right to:
+
+- sell, sublicense, or commercially redistribute this documentation;
+- incorporate substantial parts of it into a commercial product, service,
+  training package, specification, or design document;
+- use the documentation as the basis for a competing commercial marine
+  navigation, alerting, logging, simulation, or safety-monitoring product;
+- remove copyright notices or attribution;
+- imply endorsement by Anthony McDonald, William McAusland, AJRM Marine, or
+  the Signal K project.
+
+Commercial licensing is available by arrangement. Contact Anthony McDonald for
+commercial use, redistribution, sublicensing, or incorporation into commercial
+products or services.
+
+The AJRM Marine software repositories use their own software licences. Unless a
+file states otherwise, this documentation licence applies to the architecture
+documents, diagrams, explanatory text, and planning material in this repository,
+not to the source code of the AJRM Marine Signal K plugins.
+
+This documentation is provided for information and software design discussion.
+It is not navigational advice, a safety certification, or a substitute for
+approved marine equipment, official charts, prudent seamanship, or compliance
+with applicable regulations.
