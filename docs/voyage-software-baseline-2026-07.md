@@ -91,7 +91,9 @@ The source-aware navigation and sensor-only replay corrections are released as:
 | `signalk-ajrm-marine-console` | `v0.6.1` |
 | private `signalk-boat-bootstrap` | `v2.0.1` |
 
-The other AJRM packages remain at `v0.6.0`; they contain no code changed by this
-correction. SK Derived Data remains `1.45.0`, the current npm release on
-27 July 2026, and is installed for standard-path compatibility rather than as
-the AJRM navigation authority.
+The other AJRM packages receive no new tag from this correction. The updater
+still resolves the newest existing tag in each repository; notably,
+`signalk-ajrm-marine-audio` already had the unrelated `v0.6.2` release even
+though both recorded voyages used `v0.6.0`. SK Derived Data remains `1.45.0`,
+the current npm release on 27 July 2026, and is installed for standard-path
+compatibility rather than as the AJRM navigation authority.
