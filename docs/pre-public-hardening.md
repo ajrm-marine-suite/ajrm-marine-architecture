@@ -18,6 +18,7 @@ reference.
 | Package | Public app |
 | --- | --- |
 | `signalk-ajrm-marine-console` | AJRM Marine Console |
+| `signalk-ajrm-marine-navigation-reference` | AJRM Marine Navigation Reference |
 | `signalk-ajrm-marine-traffic` | AJRM Marine Traffic |
 | `signalk-ajrm-marine-display` | AJRM Marine Display |
 | `signalk-ajrm-marine-notifications` | AJRM Marine Notifications |

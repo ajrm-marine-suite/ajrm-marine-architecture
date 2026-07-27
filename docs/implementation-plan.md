@@ -54,13 +54,45 @@ Before broader announcement:
 ## GPS and DR Test Sequence
 
 1. Start with healthy GPS and steady speed.
-2. Confirm GPS Integrity accepts fixes and counters remain sensible.
-3. Turn GPS lost and confirm a lost-GPS event is counted once.
-4. Confirm DR Plotter immediately records an estimated position at loss.
-5. Confirm DR uses last reliable current set/drift after GPS loss.
-6. Restore GPS and confirm an electronic fix is recorded immediately.
-7. Confirm uncertainty is hidden or bounded while GPS is healthy.
-8. Confirm Voyage Viewer summarises GPS Integrity events and DR uncertainty.
+2. Confirm position, SOG, COG, fix quality, and timestamps come from one
+   coherent selected GNSS source.
+3. Confirm the integrity DR input excludes COG/SOG and residual/current derived
+   from the GNSS being tested.
+4. Confirm GPS Integrity reports reduced or unavailable independent assurance
+   when no independent heading/STW evidence exists.
+5. Turn GPS lost and confirm a lost-GPS event is counted once.
+6. Confirm DR Plotter immediately records an estimated position at loss.
+7. Confirm operational DR uses only a qualified external current or a visibly
+   GPS-dependent retained residual with age, decay, and uncertainty.
+8. Confirm COG/SOG propagation does not add current or leeway a second time.
+9. Confirm heading/STW propagation applies current at most once and exposes
+   whether leeway is modelled.
+10. Restore GPS and confirm an electronic fix is recorded immediately.
+11. Confirm uncertainty is hidden or bounded while GPS is healthy.
+12. Confirm Voyage Viewer summarises GPS Integrity events, DR independence,
+    source changes, residual origin, and uncertainty.
+
+## Navigation Reference Test Sequence
+
+1. Start moving with COG/SOG but no compass and confirm the reference is
+   explicitly `track-proxy`, not measured heading.
+2. Introduce fresh magnetic TP32 heading and WMM variation; confirm the bow
+   reference changes to converted true heading.
+3. Stop TP32 heading and confirm it expires back to moving COG rather than
+   remaining cached.
+4. Stop or slow the vessel and confirm unreliable COG is not used as bow
+   heading.
+5. Publish simultaneous obsolete-device and Derived Data variation; confirm
+   AJRM's local WMM result remains stable and neither calculated path becomes
+   physical sensor evidence.
+6. Publish direct true heading from a simulated calibrated NMEA 2000 compass;
+   confirm it outranks derived heading and can fall back cleanly.
+7. Exercise 359/0-degree wraparound, valid zero heading, source-switch
+   hysteresis, and clock-sector boundaries.
+8. Confirm no-reference encounter wording uses an absolute true bearing or
+   omits clock wording.
+9. Validate ground-minus-water residual direction, leeway handling, source
+   coherence, steady-motion filtering, and uncertainty.
 
 ## Audio Test Sequence
 
@@ -77,12 +109,25 @@ Before broader announcement:
 
 ## Replay Expectations
 
-Logger replay should publish source data rather than derived AJRM outputs where
-possible. That allows current plugins to recompute warnings and diagnostics from
-the captured voyage.
+Use Logger **Sensor sources only (recompute)** mode for correction validation.
+Confirm its recorded source catalogue resolves the configured physical-source
+prefixes to the expected exact IDs. Missing/unlisted sources, `plugins.*`, and
+`notifications.*` must be excluded.
+
+Replay fixtures should preserve source identifiers and timestamps so navigation
+reference arbitration and DR independence can be tested. Compact anonymised
+extracts from the 14 and 16 July 2026 voyages should cover COG-only startup,
+TP32 arrival/loss, and competing magnetic-variation sources.
 
 At `1x`, replay should closely reproduce the original timing. Faster replay is
 useful for debugging but may not preserve every human-facing timing detail.
+
+Before a result run, disable or disconnect live sensor inputs, restart playback,
+then start **Recomputed voyage replay** in Capture. At the end, let Capture stop
+the Logger result recording after its calculation flush and build a portable
+child ZIP. Reject a run if its live-input-isolation metadata reports physical
+updates. Compare source transitions, reference kinds, clock sectors, DR
+provenance, and alert decisions rather than expecting byte-identical files.
 
 ## Rollback
 

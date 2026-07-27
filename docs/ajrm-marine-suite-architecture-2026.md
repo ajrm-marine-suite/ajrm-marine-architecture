@@ -42,6 +42,7 @@ The design principles are:
 | App | Package | Responsibility |
 | --- | --- | --- |
 | AJRM Marine Console | `signalk-ajrm-marine-console` | Suite entry point, help, BITE, app status, tabbed workspace |
+| AJRM Marine Navigation Reference | `signalk-ajrm-marine-navigation-reference` | Source-aware bow heading, coherent ground track, local WMM, and current/leeway provenance |
 | AJRM Marine Traffic | `signalk-ajrm-marine-traffic` | AIS CPA/TCPA, encounter wording, profiles, voyage state, audio policy |
 | AJRM Marine Display | `signalk-ajrm-marine-display` | Chart display, traffic rendering, profile controls, visual alert panel |
 | AJRM Marine Notifications | `signalk-ajrm-marine-notifications` | Active/recent notification projection, lifecycle, deduplication |

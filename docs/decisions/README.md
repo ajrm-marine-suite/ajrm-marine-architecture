@@ -11,3 +11,5 @@ Decisions are proposed until explicitly accepted.
 - [ADR-007: Compose sailing applications in AJRM Marine Console](007-sailing-console.md)
 - [ADR-008: Replace control-heavy alerts clients with a read-only Alerts viewer](008-read-only-alerts-viewer.md)
 - [ADR-009: Align recording files, voyage manifests, and file-selection UI](009-recording-file-ownership.md)
+- [ADR-010: Use a source-aware own-vessel navigation reference](010-source-aware-navigation-reference.md)
+- [ADR-011: Replay physical sensor sources and capture recomputed child voyages](011-sensor-source-replay.md)

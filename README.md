@@ -20,6 +20,7 @@ The architecture rule is simple:
 - [Compatibility contracts](docs/compatibility-contracts.md)
 - [Implementation and verification plan](docs/implementation-plan.md)
 - [Pre-public hardening checklist](docs/pre-public-hardening.md)
+- [July 2026 voyage software baseline](docs/voyage-software-baseline-2026-07.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Target architecture diagram](docs/diagrams/target-architecture.mmd)
 
@@ -53,6 +54,8 @@ boundaries:
 - Capture, Logger, Snapshot, Voyage Viewer, and replay/debug workflows.
 - GPS Integrity and DR Plotter, including lost-GPS fallback, independent DR,
   plotted fixes, and diagnostics.
+- Own-vessel navigation reference selection, magnetic variation, compass/COG
+  fallback, current/leeway provenance, and DR independence.
 - Simulator and BITE as repeatable test infrastructure.
 - Publication, AppStore readiness, and public repository expectations.
 
