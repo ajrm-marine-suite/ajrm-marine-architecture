@@ -83,6 +83,15 @@ Wall-clock time remains the source of fresh outgoing Signal K timestamps, but a
 host-clock correction cannot make the playback scheduler wait for hours, run
 backwards, or send a compensating burst.
 
+Logger startup recovery acts only on an immutable snapshot taken before its
+controls are exposed. It rechecks file identity, size, and timestamps before
+mutation, publishes gzip output exclusively, and removes a duplicate plain
+source only after byte count and SHA-256 comparison with the decompressed gzip.
+A plugin stop invalidates that recovery generation, and a later start waits
+for the earlier recovery task to settle before processing its own snapshot.
+Changed, conflicting, or unverifiable files are retained rather than guessed
+away.
+
 Voyage replay retains the configured warm-up interval before the recorded voyage
 start so source selection, static AIS data, and plugin state can settle.
 One-times speed is enforced while a recomputed child capture is active so

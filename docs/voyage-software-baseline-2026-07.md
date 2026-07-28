@@ -125,7 +125,7 @@ real-time recomputation test are addressed by this small coordinated release:
 
 | Package | Release | Recovery scope |
 | --- | --- | --- |
-| `signalk-ajrm-marine-logger` | `v0.6.2` | Rewrite replayed `navigation.datetime` to replay wall time, pace from monotonic elapsed time, name/cache corrupt-file metadata failures, validate gzip before replacing plain data, and expose explicit playback failure/abort state |
+| `signalk-ajrm-marine-logger` | `v0.6.3` | Rewrite replayed `navigation.datetime` to replay wall time, pace from monotonic elapsed time, expose explicit playback failure/abort state, and make startup cleanup generation-cancelled, immutable-snapshot based, content-verified, and overwrite-safe |
 | `signalk-ajrm-marine-capture` | `v0.6.3` | Auto-start prepared recomputation at `1x`, show progress and disabled reasons, cancel into an incomplete/unverified ZIP, and preserve bounded partial startup-recovery evidence |
 | private `signalk-boat-bootstrap` | `v2.0.2` | Refuse package mutation/restart while Logger or Capture has protected active work, distinguish a clean first install from unreadable installed-plugin state, and provide an explicit recovery override |
 
