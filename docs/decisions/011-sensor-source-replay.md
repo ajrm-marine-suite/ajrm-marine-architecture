@@ -1,8 +1,10 @@
 # ADR-011: Replay physical sensor sources and capture recomputed child voyages
 
-Status: accepted
+Status: accepted; operational-recovery amendment released
 
 Date: 2026-07-27
+
+Updated: 2026-07-28
 
 ## Context
 
@@ -22,6 +24,31 @@ short IDs such as `YDEN.43` and `YDEN.4`.
 Replay freshness and historical meaning are separate requirements. Signal K
 consumers need fresh wall-clock timestamps so their stale-data logic works,
 while WMM and voyage analysis need the original recorded time.
+
+### 28 July replay incident
+
+During a real-time recomputation attempt, replay stopped advancing immediately
+after injection of a historical `navigation.datetime` value. That exact
+sequence is direct evidence. The live
+`~/.signalk/plugin-config-data/set-system-time.json` configuration confirms
+that Set System Time was enabled with `configuration.interval: 0`,
+`configuration.sudo: true`, and
+`configuration.preferNetworkTime: true`. It was therefore armed to act on the
+first `navigation.datetime` received after startup and had permission to adjust
+the host clock.
+
+`preferNetworkTime: true` skips that adjustment only when chrony reports a
+valid time source; the option alone does not prevent a replayed time value from
+being applied. Given the enabled configuration, the exact stall immediately
+after the historical datetime, and Logger's then wall-clock-based scheduler,
+the incident is diagnosed: Set System Time moved the host clock backwards and
+Logger's pacing calculation waited against the resulting negative elapsed
+wall time.
+
+The incident also left the operator with Capture apparently recording while
+Logger reported no recording loaded, and with stop/build controls disabled.
+That state must be recoverable without labelling a partial run as a verified
+recomputation.
 
 ## Decision
 
@@ -45,6 +72,17 @@ their recorded source is accidentally selected. Original source identity is
 preserved. Update and embedded Signal K timestamps are refreshed to wall time;
 the Logger playback clock publishes `originalCapturedAt` separately.
 
+`navigation.datetime` is a data value rather than an update timestamp, so it
+must be rewritten explicitly to replay wall time. A replay must never publish a
+historical system-time input that can move the host clock. The parent recording
+and Logger's explicit original-time projection retain the historical value for
+audit and WMM/voyage analysis.
+
+Playback rate and delay calculations use a monotonic elapsed-time source.
+Wall-clock time remains the source of fresh outgoing Signal K timestamps, but a
+host-clock correction cannot make the playback scheduler wait for hours, run
+backwards, or send a compensating burst.
+
 Voyage replay retains the configured warm-up interval before the recorded voyage
 start so source selection, static AIS data, and plugin state can settle.
 One-times speed is enforced while a recomputed child capture is active so
@@ -55,7 +93,10 @@ capture workflow, but is not timing-equivalent.
 ## Recomputed child voyage
 
 Capture can start a dedicated recomputed-replay recording after a sensor-only
-voyage has been loaded and restarted. This recording:
+voyage has been loaded at its prepared start. Starting it is one coordinated
+action: Capture fixes playback at `1x`, starts the result recording, and
+commands Logger to play. The operator does not need a separate Logger Play
+action. This recording:
 
 - has zero rolling-buffer backfill;
 - writes each filtered replay input once;
@@ -69,6 +110,11 @@ voyage has been loaded and restarted. This recording:
   input, bounded to fifteen seconds;
 - always builds a portable ZIP.
 
+Capture shows the active phase and Logger cursor/total progress. A disabled
+stop/build control must have a visible reason, such as playback still running,
+calculation flush pending, or no recomputed voyage active; a grey control alone
+is not an adequate state report.
+
 The child `index.json` records the parent voyage, playback mode and rate,
 original time range, source rule and resolved source IDs, filter statistics,
 source catalogue, cursor/completeness coverage, software snapshots, and
@@ -77,6 +123,18 @@ until Logger reaches the end of the loaded voyage; an aborted ordinary stop is
 therefore distinguishable by `coverage.complete: false`.
 Coverage is cumulative across all prepared segments, so completing the first
 hourly file cannot be mistaken for completing a multi-segment voyage.
+
+An explicit Cancel action stops playback and result capture and still packages
+the evidence collected so far. The resulting ZIP records the cancellation
+reason, partial coverage, and an explicit incomplete/unverified result. It must
+not be accepted by comparison tooling as a successful recomputation.
+
+If Signal K or the Pi is interrupted, Capture startup recovery preserves a
+bounded amount of partial recording, status, event, and diagnostic evidence.
+Recovery must close or quarantine unfinished files safely, retain the parent
+lineage and last known coverage when available, and mark the recovered bundle
+incomplete/unverified. It must not copy an unbounded system journal or silently
+discard all evidence merely because normal finalisation did not run.
 
 Physical live inputs must be disabled or disconnected while replay runs.
 Logger quarantines detected physical-source deltas from the child log and marks
@@ -90,6 +148,17 @@ the recorded warm-up interval then establishes the calculation state used by
 the replay. Logger cannot provide a universal reset hook for every third-party
 or suite plugin.
 
+## Package-operation guard
+
+The Boat Bootstrap installer and updater perform a read-only local Signal K
+preflight before changing plugin packages or restarting Signal K. They refuse
+the operation while Logger is recording, playback is active or paused, a
+replay-result capture is active, or Capture has an active voyage. A reachable
+server whose state cannot be verified fails closed. Only a genuinely
+unreachable server with no active Signal K service may fail open with a
+warning. An explicit force override exists for deliberate recovery, with a
+warning that in-memory replay and voyage work may be lost.
+
 ## Verification
 
 1. Disable/disconnect live inputs, restart Signal K, and keep the calculation
@@ -99,16 +168,28 @@ or suite plugin.
 3. Load the 16 July voyage and confirm `derived-data`, Traffic, GPS Integrity,
    Audio, route/course providers, notifications, and prior `plugins.*` values
    are excluded.
-4. Confirm source labels are unchanged and replayed timestamps are fresh.
+4. Confirm source labels are unchanged, update timestamps are fresh, and
+   replayed `navigation.datetime` follows replay wall time rather than the
+   parent voyage date.
 5. Confirm the replay clock retains each original recorded timestamp.
-6. Start result capture only from the replay start with sensor-only mode active.
-7. Replay at 1x with physical inputs isolated.
-8. Stop after the end-of-capture calculation flush and inspect the child ZIP.
-9. Confirm the child contains filtered sensor inputs, new Navigation Reference,
+6. Start recomputed capture in Capture and confirm it restarts and begins Logger
+   playback automatically at `1x`.
+7. Confirm progress and the stop/build disabled reason remain visible through
+   playback and the calculation flush.
+8. Confirm monotonic pacing remains stable across a controlled host wall-clock
+   adjustment.
+9. Stop after the end-of-capture calculation flush and inspect the child ZIP.
+10. Confirm the child contains filtered sensor inputs, new Navigation Reference,
    Traffic, GPS Integrity/DR, and other calculated outputs, but no old calculated
    inputs.
-10. Confirm `coverage.complete` is true.
-11. Reject validation runs whose isolation metadata reports physical live input.
+11. Confirm `coverage.complete` is true.
+12. Cancel a separate test run and confirm its ZIP is preserved but explicitly
+    incomplete/unverified.
+13. Interrupt a separate test run and confirm startup recovery preserves only
+    bounded partial evidence and never marks it verified.
+14. Confirm both package scripts refuse an update during each protected
+    Logger/Capture state and require the explicit override to proceed.
+15. Reject validation runs whose isolation metadata reports physical live input.
 
 ## Consequences
 
@@ -116,7 +197,12 @@ or suite plugin.
   answers.
 - Source policy is explicit and auditable across boats with different hardware.
 - Original and wall-clock time remain available for their separate purposes.
+- Historical navigation time cannot be fed to a host-clock setter, and pacing
+  is independent of host wall-clock corrections.
 - Recomputed ZIPs form a traceable parent/child chain that can be compared
   without expecting byte-for-byte equality.
+- Cancelled and interrupted runs retain useful bounded evidence without being
+  confused with complete validation.
+- Routine package updates cannot silently destroy active replay/capture state.
 - Reliable validation requires an operational step outside the software:
   isolating the Pi from live navigation inputs for the duration of replay.
