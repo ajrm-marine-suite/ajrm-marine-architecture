@@ -139,6 +139,11 @@ Traffic publishes standard Signal K notifications so non-AJRM clients can still
 display meaningful alerts. AJRM clients may consume richer Traffic projections,
 but they must not reverse-engineer meaning from message text.
 
+Traffic carries AIS Class A/B only when fresh physical receiver provenance
+supports the report. Unknown or conflicting class remains explicit rather than
+being guessed from vessel size or behaviour. It also preserves an explicit
+`null` rate of turn so renderers clear stale turn indicators.
+
 ### Notifications
 
 Notifications applies generic mechanics: active/recent state, lifecycle,
@@ -147,6 +152,11 @@ not decide what a collision, GPS fault, or depth condition means.
 
 Notifications runtime state is session-scoped. Providers republish current
 conditions after restart.
+
+Instrument Alerts distinguishes one-shot anchoring depth callouts from a
+continuing shallow-depth condition. Callouts expire or clear when safely outside
+their band; the separate below-keel alert remains active until its threshold and
+hysteresis resolve.
 
 ### Audio
 
@@ -171,7 +181,8 @@ continue.
 ### Capture, Logger, Snapshot, and Voyage Viewer
 
 Logger owns raw Signal K recordings and replay. Capture owns voyage start/stop,
-comments, diagnostic snapshots, and portable bundles. Snapshot owns point-in-time
+timestamped observation JSONL, optional structured diagnostic Snapshot evidence,
+parent/child replay lineage, and portable bundles. Snapshot owns point-in-time
 system diagnostic collection. Voyage Viewer is read-only analysis and plotting.
 
 Replay should republish source data rather than derived outputs where possible,
@@ -194,7 +205,8 @@ Persistent:
 - Harbour/anchorage regions.
 - Vessel database entries.
 - Logger recordings.
-- Capture voyage bundles and comments.
+- Capture voyage bundles, observation logs, optional evidence, and replay
+  lineage.
 - DR Plotter plotted fixes and track history where configured.
 - BITE result summaries.
 

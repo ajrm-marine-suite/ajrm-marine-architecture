@@ -97,3 +97,21 @@ still resolves the newest existing tag in each repository; notably,
 though both recorded voyages used `v0.6.0`. SK Derived Data remains `1.45.0`,
 the current npm release on 27 July 2026, and is installed for standard-path
 compatibility rather than as the AJRM navigation authority.
+
+## Field-test follow-up release
+
+The additional findings from review of the same voyages and subsequent live
+testing are addressed by this additive follow-up:
+
+| Package | Follow-up release | Correction |
+| --- | --- | --- |
+| `signalk-ajrm-marine-display` | `v0.6.2` | Render explicit Class A/B/unknown targets, clear a null ROT indicator, allow own-vessel icon sizing, and record voyage observations |
+| `signalk-ajrm-marine-traffic` | `v0.6.2` | Accept AIS class only from qualified receiver provenance and preserve explicit null rate of turn |
+| `signalk-ajrm-marine-gps-integrity` | `v0.6.2` | Publish Signal K units metadata for trusted SOG, COG, heading, and DR fields |
+| `signalk-ajrm-marine-capture` | `v0.6.2` | Store timestamped observation JSONL, optional structured Snapshot evidence, and recomputed parent lineage |
+| `signalk-ajrm-marine-instrument-alerts` | `v0.6.1` | Treat anchoring depth callouts as expiring one-shot events without clearing the continuing below-keel alert |
+
+These tags do not change the historical `v0.6.0` software attribution for the
+14 and 16 July source voyages. A recomputed child voyage records the newer
+installed versions in its own snapshots and keeps the parent voyage reference
+for comparison.
