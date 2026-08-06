@@ -44,7 +44,11 @@ they do not obscure those controls; apps may choose whether a panel starts
 open or closed. A toolbar button that opens a panel is a toggle: pressing it
 again closes that panel. Each app has exactly one chart-selection surface;
 obsolete or app-specific duplicates must not remain in Settings drawers.
-App-specific behaviour and overlays remain in their owning applications.
+Shared controls use Display's 38-pixel button dimensions, approximately
+25-pixel Bootstrap-style SVG glyphs and 10-pixel vertical separation. Common
+actions use the same glyph paths as Display; app-specific actions retain their
+own meaning while using the same SVG system and scale. App-specific behaviour
+and overlays remain in their owning applications.
 
 The map core is an internal build/development dependency, not a separately
 installed Signal K plugin. Apps that do not bundle dependencies at runtime
@@ -63,6 +67,8 @@ include the app and core versions so an upgrade does not retain stale controls.
   hierarchy in every map app.
 - Panel actions have consistent open/close toggle behaviour, and chart choices
   are not duplicated elsewhere in an app.
+- Control size, icon scale and vertical rhythm match Display across the four
+  map applications.
 - A change to the common contract requires a tagged map-core release followed
   by explicit consumer patch releases; consumers do not float on an untagged
   branch.
