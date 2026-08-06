@@ -39,9 +39,10 @@ cycle and action-toolbar controls with Display-compatible labels and order.
 All map interaction controls occupy the upper-left Leaflet stack: the native
 `+ / −` zoom control is first, followed by chart controls and then
 application-specific actions. Action buttons form a vertical stack. Left-side
-application drawers start closed and open to the right of the toolbar so they
-do not obscure those controls. App-specific behaviour and overlays remain in
-their owning applications.
+application drawers and off-canvas panels open to the right of the toolbar so
+they do not obscure those controls; apps may choose whether a panel starts
+open or closed. App-specific behaviour and overlays remain in their owning
+applications.
 
 The map core is an internal build/development dependency, not a separately
 installed Signal K plugin. Apps that do not bundle dependencies at runtime
