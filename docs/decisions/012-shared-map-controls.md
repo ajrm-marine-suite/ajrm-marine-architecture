@@ -30,12 +30,16 @@ contract `ajrm-marine-map-shell-v1` and reusable implementation for:
 - basemap and overlay selection;
 - nested Charts Provider Simple folder enable/disable controls;
 - cycling overlapping charts and returning to automatic selection; and
+- a common Display-style action-button toolbar for application-owned tools;
 - coordinate-format helpers.
 
 Display retains its mature local presentation and consumes the core ranking
-contract. DR Plotter, Voyage Viewer and Harbour Editor use the shared selector
-and cycle controls with Display-compatible labels and order. App-specific
-controls and overlays remain in their owning applications.
+contract. DR Plotter, Voyage Viewer and Harbour Editor use the shared selector,
+cycle and action-toolbar controls with Display-compatible labels and order.
+All map interaction controls occupy the upper-left Leaflet stack: the native
+`+ / −` zoom control is first, followed by chart controls and then
+application-specific actions. App-specific behaviour and overlays remain in
+their owning applications.
 
 The map core is an internal build/development dependency, not a separately
 installed Signal K plugin. Apps that do not bundle dependencies at runtime
@@ -50,6 +54,8 @@ include the app and core versions so an upgrade does not retain stale controls.
 - Auto Charts ranking and overlapping-chart behaviour have one tested owner.
 - Charts Provider Simple folder hierarchy and inherited disabling are exposed
   consistently.
+- Zoom, chart selection and application actions use the same left-side visual
+  hierarchy in every map app.
 - A change to the common contract requires a tagged map-core release followed
   by explicit consumer patch releases; consumers do not float on an untagged
   branch.
