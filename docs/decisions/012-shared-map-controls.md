@@ -41,8 +41,10 @@ All map interaction controls occupy the upper-left Leaflet stack: the native
 application-specific actions. Action buttons form a vertical stack. Left-side
 application drawers and off-canvas panels open to the right of the toolbar so
 they do not obscure those controls; apps may choose whether a panel starts
-open or closed. App-specific behaviour and overlays remain in their owning
-applications.
+open or closed. A toolbar button that opens a panel is a toggle: pressing it
+again closes that panel. Each app has exactly one chart-selection surface;
+obsolete or app-specific duplicates must not remain in Settings drawers.
+App-specific behaviour and overlays remain in their owning applications.
 
 The map core is an internal build/development dependency, not a separately
 installed Signal K plugin. Apps that do not bundle dependencies at runtime
@@ -59,6 +61,8 @@ include the app and core versions so an upgrade does not retain stale controls.
   consistently.
 - Zoom, chart selection and application actions use the same left-side visual
   hierarchy in every map app.
+- Panel actions have consistent open/close toggle behaviour, and chart choices
+  are not duplicated elsewhere in an app.
 - A change to the common contract requires a tagged map-core release followed
   by explicit consumer patch releases; consumers do not float on an untagged
   branch.
