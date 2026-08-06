@@ -38,7 +38,9 @@ contract. DR Plotter, Voyage Viewer and Harbour Editor use the shared selector,
 cycle and action-toolbar controls with Display-compatible labels and order.
 All map interaction controls occupy the upper-left Leaflet stack: the native
 `+ / −` zoom control is first, followed by chart controls and then
-application-specific actions. App-specific behaviour and overlays remain in
+application-specific actions. Action buttons form a vertical stack. Left-side
+application drawers start closed and open to the right of the toolbar so they
+do not obscure those controls. App-specific behaviour and overlays remain in
 their owning applications.
 
 The map core is an internal build/development dependency, not a separately
