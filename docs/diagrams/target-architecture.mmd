@@ -4,7 +4,7 @@ flowchart LR
   subgraph Inputs["Inputs and replay"]
     Live["Live NMEA / Signal K feeds"]
     Sim["AJRM Marine Simulator"]
-    LoggerReplay["AJRM Marine Logger replay"]
+    CaptureReplay["AJRM Marine Capture replay"]
   end
 
   subgraph Providers["Domain providers"]
@@ -29,7 +29,6 @@ flowchart LR
   end
 
   subgraph Recording["Recording and review"]
-    Logger["AJRM Marine Logger"]
     Capture["AJRM Marine Capture"]
     Snapshot["AJRM Marine Snapshot"]
     Viewer["AJRM Marine Voyage Viewer"]
@@ -38,7 +37,7 @@ flowchart LR
 
   Live --> SK
   Sim --> SK
-  LoggerReplay --> SK
+  CaptureReplay --> SK
 
   SK --> Providers
   Providers -->|"standard notifications + AJRM diagnostics"| SK
@@ -60,10 +59,8 @@ flowchart LR
   SK --> Instruments
   SK --> Console
 
-  SK --> Logger
   SK --> Capture
   Snapshot --> Capture
-  Logger --> Viewer
   Capture --> Viewer
   Bite --> Capture
   Bite --> Providers

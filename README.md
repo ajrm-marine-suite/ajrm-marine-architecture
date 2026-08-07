@@ -21,6 +21,7 @@ The architecture rule is simple:
 - [Implementation and verification plan](docs/implementation-plan.md)
 - [Pre-public hardening checklist](docs/pre-public-hardening.md)
 - [July 2026 voyage software baseline](docs/voyage-software-baseline-2026-07.md)
+- [August 2026 suite simplification audit](docs/suite-simplification-audit-2026-08.md)
 - [Architecture decisions](docs/decisions/README.md)
 - [Target architecture diagram](docs/diagrams/target-architecture.mmd)
 
@@ -51,7 +52,7 @@ boundaries:
 - Audio, Piper rendering, speaker/stream/desktop-player delivery, and audible
   timeline rules.
 - Display, Console, Alerts, OpenCPN message display, and other visual clients.
-- Capture, Logger, Snapshot, Voyage Viewer, and replay/debug workflows.
+- Capture, Snapshot, Voyage Viewer, and replay/debug workflows.
 - GPS Integrity and DR Plotter, including lost-GPS fallback, independent DR,
   plotted fixes, and diagnostics.
 - Own-vessel navigation reference selection, magnetic variation, compass/COG

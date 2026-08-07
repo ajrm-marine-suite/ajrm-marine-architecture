@@ -24,7 +24,7 @@ The design principles are:
    layer.
 3. **Small authorities.** Traffic owns AIS encounter meaning. Audio owns the
    audible timeline. GPS Integrity owns GPS/DR trust evaluation. Capture owns
-   voyage bundling. Logger owns raw replayable recordings.
+   canonical recording, replay, and voyage bundling.
 4. **No hidden client policy.** Display, Console, Alerts, Voyage Viewer, DR
    Plotter, Instruments, desktop audio players, and OpenCPN panels must not
    reimplement safety decisions from prose or private assumptions.
@@ -48,7 +48,7 @@ The design principles are:
 | AJRM Marine Notifications | `signalk-ajrm-marine-notifications` | Active/recent notification projection, lifecycle, deduplication |
 | AJRM Marine Audio | `signalk-ajrm-marine-audio` | Piper rendering, audio queue, speaker/stream/desktop-player delivery |
 | AJRM Marine Alerts | `signalk-ajrm-marine-alerts` | Read-only compact alert display for crew devices |
-| AJRM Marine Capture | `signalk-ajrm-marine-capture` | Voyage orchestration, comments, snapshots, portable debug bundles |
+| AJRM Marine Capture | `signalk-ajrm-marine-capture` | Canonical recording and replay, voyage orchestration, comments, snapshots, portable debug bundles |
 
 ### Navigation Integrity
 
@@ -61,7 +61,6 @@ The design principles are:
 
 | App | Package | Responsibility |
 | --- | --- | --- |
-| AJRM Marine Logger | `signalk-ajrm-marine-logger` | Raw Signal K recording and replay |
 | AJRM Marine Voyage Viewer | `signalk-ajrm-marine-voyage-viewer` | Analyse voyage bundles, plot tracks, summarise GPS/DR and alerts |
 | AJRM Marine Snapshot | `signalk-ajrm-marine-snapshot` | System and plugin diagnostics snapshot |
 
@@ -99,7 +98,6 @@ flowchart LR
   Notifications["Notifications"]
   Audio["Audio"]
   Capture["Capture"]
-  Logger["Logger"]
 
   subgraph Clients["Clients and displays"]
     Console["Console"]
@@ -113,7 +111,6 @@ flowchart LR
   end
 
   Sim --> SK
-  Logger --> SK
   SK --> Providers
   Providers -->|"standard notifications + suite diagnostics"| SK
   SK --> Notifications
@@ -124,7 +121,6 @@ flowchart LR
   Traffic -->|"targets + profile + audio policy + voyage state"| SK
   GPS -->|"navigation integrity + DR diagnostics"| SK
   Capture -->|"voyage metadata + bundles"| Viewer
-  Logger -->|"recordings + replay"| Viewer
 ```
 
 ## 4. Authority Boundaries
@@ -178,12 +174,14 @@ fixes, uncertainty, vectors, and plot history. When GPS is lost, DR uses the
 last reliable current set/drift rather than assuming live current data will
 continue.
 
-### Capture, Logger, Snapshot, and Voyage Viewer
+### Capture, Snapshot, and Voyage Viewer
 
-Logger owns raw Signal K recordings and replay. Capture owns voyage start/stop,
+Capture owns canonical physical-input recordings, replay, voyage start/stop,
 timestamped observation JSONL, optional structured diagnostic Snapshot evidence,
 parent/child replay lineage, and portable bundles. Snapshot owns point-in-time
 system diagnostic collection. Voyage Viewer is read-only analysis and plotting.
+The former standalone Logger package is retired and is not part of the active
+suite architecture.
 
 Replay should republish source data rather than derived outputs where possible,
 so current plugin logic can be exercised again.
@@ -204,8 +202,7 @@ Persistent:
 - Plugin configuration.
 - Harbour/anchorage regions.
 - Vessel database entries.
-- Logger recordings.
-- Capture voyage bundles, observation logs, optional evidence, and replay
+- Capture canonical recordings, voyage bundles, observation logs, optional evidence, and replay
   lineage.
 - DR Plotter plotted fixes and track history where configured.
 - BITE result summaries.
