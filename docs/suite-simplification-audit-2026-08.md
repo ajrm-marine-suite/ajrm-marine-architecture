@@ -33,7 +33,7 @@ do not justify permanent runtime branches.
 | Console | Suite shell, help, BITE | first pass complete | Retain; candidate to absorb Alerts webapp |
 | Alerts | Small read-only alert webapp | review complete; retired | Merged into Console in v0.7.0 |
 | Navigation Reference | Source-aware navigation reference | first pass complete | Retain authority; candidate navigation package module |
-| GPS Integrity | Navigation trust provider | queued | Candidate navigation package module |
+| GPS Integrity | Navigation trust provider | first pass complete | Candidate navigation package module |
 | DR Plotter | Operational DR webapp | queued | Candidate navigation package webapp |
 | Traffic | AIS encounter authority | queued | Retain separately as the live collision-risk authority |
 | Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
@@ -180,6 +180,24 @@ This preserves different failure and privilege domains. In particular:
   the only runtime contracts.
 - Repeated executable and voice scans during each status build were reduced by
   sharing one dependency result.
+
+### GPS Integrity
+
+- Version 0.7.0 preserves GPS Integrity as the navigation-trust authority while
+  preparing it to become an internal module of the proposed Navigation
+  Integrity package.
+- Settings, baseline reset and manual-fix routes now require Signal K write
+  access and all current routes have an OpenAPI description.
+- Partial settings updates previously replaced omitted values with defaults,
+  which could silently re-enable alerts or reset the independent-DR realignment
+  interval. Omitted settings are now preserved.
+- Cached samples are cleared on lifecycle restart, evaluation timers no longer
+  hold the Node process open, and running state is explicit.
+- The unused flat `deadReckoning.*` Signal K projection was removed. The current
+  suite uses the unambiguous `deadReckoning.operational.*` and
+  `deadReckoning.integrity.*` paths. The full integrity state still temporarily
+  carries its older internal `deadReckoning` member until remaining consumer
+  fallbacks are removed as part of the Navigation Integrity merger.
 
 ## Signal K conformance backlog
 
