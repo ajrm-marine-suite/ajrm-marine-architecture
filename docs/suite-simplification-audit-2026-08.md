@@ -1,6 +1,6 @@
 # AJRM Marine Suite Simplification Audit
 
-Status: active review  
+Status: first-pass review complete; package-boundary migrations pending
 Started: 2026-08-07
 
 ## Objective
@@ -45,19 +45,22 @@ do not justify permanent runtime branches.
 | Instruments | Display and instrument notification provider | review and merger complete | Retain combined package |
 | Instrument Alerts | Retirement marker only | retired | Merged into Instruments in v0.8.0 |
 | Harbour Editor | Harbour resource editor/provider | first pass complete | Retain separately |
-| Simulator | Optional test data source | queued | Retain separately |
-| Snapshot | Optional diagnostic evidence provider | queued | Retain separately |
-| Pi Controller | Privileged Pi operations | queued | Retain separately |
+| Simulator | Optional test data source | first pass complete | Retain separately |
+| Snapshot | Optional diagnostic evidence provider | first pass complete | Retain separately |
+| Pi Controller | Privileged Pi operations | first pass complete | Retain separately |
 | Logger | Retirement marker only | retired | Remove from active suite/install model |
 
-`@ajrm-marine/map-core` is a shared browser library, not a Signal K plugin. It
-continues to standardise map controls without merging the four different map
-applications.
+`@ajrm-marine/map-core` is a reviewed shared browser library, not a Signal K
+plugin. It continues to standardise map controls without merging the four
+different map applications. AJRM Marine Audio Player is a separate desktop
+client, not a Signal K plugin or installation boundary.
 
-## Proposed target installation boundaries
+## Recommended target installation boundaries
 
-The target is thirteen active Signal K packages rather than eighteen, subject to
-the detailed reviews and migration tests:
+The detailed reviews confirm a target of thirteen active Signal K packages.
+The current reviewed baselines keep sixteen active packages; the remaining
+reduction is delivered by two explicit, separately tested migrations rather
+than by mixing those changes into the cleanup releases:
 
 1. Console, including the compact read-only Alerts view.
 2. Navigation Integrity, containing Navigation Reference, GPS Integrity, and
@@ -86,6 +89,20 @@ This preserves different failure and privilege domains. In particular:
 - Harbour Editor remains an independent durable-resource provider.
 - Pi Controller remains isolated because it performs privileged host actions.
 - Simulator remains optional and removable from a sailing installation.
+
+The remaining boundary migrations are:
+
+1. Combine Navigation Reference, GPS Integrity and DR Plotter into one
+   Navigation Integrity install while retaining three internal modules and the
+   existing standard Signal K outputs.
+2. Combine Capture and Voyage Viewer into one Voyages install with a single
+   voyage store and one lifecycle.
+
+Traffic and Vessel Database explicitly remain separate. Traffic owns transient
+AIS encounter and collision-risk state; Vessel Database owns durable identity,
+classification and manual enrichment. Combining them would couple safety
+calculation availability to an administrative data store and make both harder
+to test and recover.
 
 ## Findings and changes
 
@@ -398,6 +415,35 @@ This preserves different failure and privilege domains. In particular:
   now declares the suite Node.js 20 baseline.
 - Syntax, shell syntax, three access/contract tests, production dependency
   audit, package dry-run and diff checks passed.
+
+### Map Core
+
+- Map Core v0.7.0 remains the shared browser implementation for chart
+  selection, Charts Provider Simple folder controls, overlapping-chart cycling,
+  coordinate formatting, control icons and map-panel layout. Display, DR
+  Plotter, Voyage Viewer and Harbour Editor retain only their domain layers and
+  actions.
+- The chart selector now unregisters its window resize, DOM change and Leaflet
+  map listeners when removed. Event-target validation no longer assumes a
+  browser-global `HTMLInputElement`, which also makes the shared control easier
+  to test and embed.
+- All 12 tests, package dry-run and diff checks passed. The library has no
+  production dependencies or HTTP surface.
+
+### Audio Player
+
+- Audio Player v0.7.0 remains a standalone Electron client for the Audio
+  plugin, not a Signal K plugin. It does not add another server-side authority
+  or installation boundary.
+- Polls can no longer overlap or update the interface after disconnect. Muting
+  pauses the current announcement and unmuting resumes it instead of leaving
+  playback stuck.
+- Electron sandboxing, external-window/navigation denial and a content security
+  policy now constrain the renderer. Private-host certificate exceptions use
+  validated IP addresses rather than permissive digit patterns.
+- Syntax tests, host-policy tests, production dependency audit, package dry-run
+  and diff checks passed. This local-only desktop repository has no configured
+  Git remote; v0.7.0 is committed and tagged locally rather than published.
 
 ## Signal K conformance backlog
 
