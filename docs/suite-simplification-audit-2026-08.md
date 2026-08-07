@@ -430,6 +430,9 @@ to test and recover.
 - Display, DR Plotter, Harbour Editor and Voyage Viewer v0.7.1 pin and bundle
   the reviewed Map Core v0.7.0 release. Voyage Viewer also moves from Node.js
   18 to the suite Node.js 20 baseline.
+- Signal K packaging validation then identified package-relative App Store icon
+  paths in Display, DR Plotter and Harbour Editor. Their v0.7.2 releases point
+  at the icons actually included beneath `public/`.
 - All 12 tests, package dry-run and diff checks passed. The library has no
   production dependencies or HTTP surface.
 
