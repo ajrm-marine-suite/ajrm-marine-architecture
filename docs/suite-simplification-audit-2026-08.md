@@ -342,6 +342,26 @@ This preserves different failure and privilege domains. In particular:
 - All 14 tests, production dependency audit, syntax checks, package dry-run and
   diff checks passed.
 
+### Simulator
+
+- Simulator v0.8.0 remains a separate optional home-test provider. It owns one
+  coordinated own-vessel, environment, GNSS and synthetic AIS model; it does
+  not absorb Traffic or Vessel Database responsibilities.
+- All 15 state-changing HTTP routes now require Signal K read/write or
+  administrator access, and OpenAPI 3.1 describes the exact 16-route API.
+- The plugin publishes a versioned retained `plugins.ajrmMarineSimulator`
+  lifecycle projection so Console/BITE can verify output state without relying
+  on prose status. Stop emits the final quiet sample, clears stale environment
+  and target values, retracts that projection and releases its timer.
+- Runtime persistence now covers the editable battery, transducer offset and
+  variation parameters that were previously lost at restart. Direction
+  controls reject invalid values instead of silently treating them as right/up.
+- The obsolete `/own/autopilot` alias, duplicated-GPX importer repair and three
+  unused value builders were removed. Runtime settings advance to v2 and
+  intentionally ignore the old route-repair-era settings once.
+- All 58 tests, production dependency audit, package dry-run and diff checks
+  passed.
+
 ## Signal K conformance backlog
 
 - Add or complete `getOpenApi()` for every package that registers HTTP routes.
