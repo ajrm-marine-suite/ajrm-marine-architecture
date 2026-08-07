@@ -381,6 +381,24 @@ This preserves different failure and privilege domains. In particular:
   read-only routes. All 25 tests, production dependency audit, package dry-run
   and diff checks passed.
 
+### Pi Controller
+
+- Pi Controller v0.7.0 remains separate because it is the only package that
+  owns host-level health, shutdown/reboot, support installation and SD-card
+  backup operations. These privileges do not belong in a navigation or display
+  plugin.
+- All four host-action routes now require Signal K read/write or administrator
+  access in addition to their existing enable and explicit-confirmation gates.
+  OpenAPI 3.1 describes the exact five-route surface.
+- Restart clears both monitoring timers, pending power timers and owned support
+  or backup child processes. Late telemetry, shutdown-watch and child callbacks
+  are generation-guarded; stop retracts retained telemetry.
+- Concurrent power and support actions are rejected. Disk monitor paths are
+  passed after `df --`, detached spawn failures are handled, and the package
+  now declares the suite Node.js 20 baseline.
+- Syntax, shell syntax, three access/contract tests, production dependency
+  audit, package dry-run and diff checks passed.
+
 ## Signal K conformance backlog
 
 - Add or complete `getOpenApi()` for every package that registers HTTP routes.
