@@ -31,12 +31,12 @@ do not justify permanent runtime branches.
 | Package | Current role | Review state | Initial disposition |
 | --- | --- | --- | --- |
 | Console | Suite shell, help, BITE | first pass complete | Retain; candidate to absorb Alerts webapp |
-| Alerts | Small read-only alert webapp | queued | Candidate to become a Console view |
+| Alerts | Small read-only alert webapp | review complete; retired | Merged into Console in v0.7.0 |
 | Navigation Reference | Source-aware navigation reference | first pass complete | Retain authority; candidate navigation package module |
 | GPS Integrity | Navigation trust provider | queued | Candidate navigation package module |
 | DR Plotter | Operational DR webapp | queued | Candidate navigation package webapp |
-| Traffic | AIS encounter authority | queued | Retain authority; candidate to own vessel data module |
-| Vessel Database | Vessel enrichment store/editor | queued | Candidate Traffic module and view |
+| Traffic | AIS encounter authority | queued | Retain separately as the live collision-risk authority |
+| Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | queued | Retain separately |
 | Notifications | Generic notification broker | queued | Retain separately |
 | Audio | Audio timeline and delivery | queued | Retain separately |
@@ -56,22 +56,23 @@ applications.
 
 ## Proposed target installation boundaries
 
-The target is twelve active Signal K packages rather than eighteen, subject to
+The target is thirteen active Signal K packages rather than eighteen, subject to
 the detailed reviews and migration tests:
 
 1. Console, including the compact read-only Alerts view.
 2. Navigation Integrity, containing Navigation Reference, GPS Integrity, and
    DR Plotter as separately testable internal modules and views.
-3. Traffic, including the vessel enrichment database and editor.
-4. Display.
-5. Notifications.
-6. Audio.
-7. Voyages, containing Capture and Voyage Viewer with one voyage store.
-8. Instruments, including instrument alert rules.
-9. Harbour Editor.
-10. Simulator.
-11. Snapshot.
-12. Pi Controller.
+3. Traffic.
+4. Vessel Database.
+5. Display.
+6. Notifications.
+7. Audio.
+8. Voyages, containing Capture and Voyage Viewer with one voyage store.
+9. Instruments, including instrument alert rules.
+10. Harbour Editor.
+11. Simulator.
+12. Snapshot.
+13. Pi Controller.
 
 This preserves different failure and privilege domains. In particular:
 
@@ -79,6 +80,9 @@ This preserves different failure and privilege domains. In particular:
   depend on speech synthesis or speaker hardware.
 - Display remains independent of Traffic, so a renderer does not become the
   collision authority.
+- Vessel Database remains independent of Traffic: persistent vessel identity
+  enrichment and bulk administration have a different lifecycle and failure
+  mode from live CPA/TCPA and collision-risk evaluation.
 - Harbour Editor remains an independent durable-resource provider.
 - Pi Controller remains isolated because it performs privileged host actions.
 - Simulator remains optional and removable from a sailing installation.
@@ -118,6 +122,11 @@ This preserves different failure and privilege domains. In particular:
 - Console already describes its HTTP routes with OpenAPI. Its larger BITE file
   remains a candidate for decomposition into domain-focused modules during the
   full Console review.
+- Version 0.7.0 absorbs the read-only Alerts view and its three display
+  preferences. Notifications remains the sole alert-state authority and Audio
+  remains the sole speech/delivery authority. The former Alerts package is now
+  a disabled retirement marker, removing one active plugin and one duplicate
+  webapp lifecycle without combining safety authorities.
 
 ### Voyage Viewer
 
