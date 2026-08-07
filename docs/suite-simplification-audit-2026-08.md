@@ -37,7 +37,7 @@ do not justify permanent runtime branches.
 | DR Plotter | Operational DR webapp | first pass complete | Candidate navigation package webapp |
 | Traffic | AIS encounter authority | first pass complete | Retain separately as the live collision-risk authority |
 | Vessel Database | Vessel enrichment store/editor | first pass complete | Retain separately as persistent identity administration |
-| Display | Live chart and traffic display | queued | Retain separately |
+| Display | Live chart and traffic display | first pass complete | Retain separately |
 | Notifications | Generic notification broker | first pass complete | Retain as backend authority; UI moved to Console |
 | Audio | Audio timeline and delivery | first pass complete | Retain separately |
 | Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
@@ -293,6 +293,31 @@ This preserves different failure and privilege domains. In particular:
   The reviewed package passes 27 tests, including lifecycle, access-control,
   OpenAPI parity, import validation, SAR-aircraft classification and exact-MMSI
   test cleanup.
+
+### Display
+
+- Display v0.7.0 remains an independent renderer and operational webapp.
+  Traffic remains the live collision-risk authority and Vessel Database remains
+  the separate durable identity/classification authority.
+- The webapp still called three Display endpoints that no longer existed:
+  Audio sound check, Notifications history clearing and Traffic all-well
+  policy. Those controls now call their authoritative providers directly.
+- Every Display mutation now requires Signal K read/write or administrator
+  access, and OpenAPI describes the exact 25-route HTTP surface. Route-parity
+  and unauthenticated-write tests prevent drift.
+- Stop retracts `plugins.ajrmMarineDisplay`, removes both in-process API
+  registrations and invalidates delayed route initialization. Browser speech
+  is projected only when Notifications explicitly selects audio delivery.
+- The nonexistent GPS-warning pause action now honestly dismisses the local
+  popup; system sound policy remains with Traffic and Audio. Dead browser
+  announcement logging and an unimplemented CPA-shape checkbox were removed.
+- A dormant 553-line local CPA/risk calculator was deleted. Production Display
+  imported only its angle conversion functions, so keeping a second safety
+  engine contradicted Traffic ownership and created needless maintenance risk.
+  The replacement angle utility is seven lines.
+- The package dropped unused Lodash and obsolete `AisPlus` internal naming.
+  All 356 tests, production dependency audit, build, scaffold validation,
+  package dry-run and diff checks passed.
 
 ## Signal K conformance backlog
 
