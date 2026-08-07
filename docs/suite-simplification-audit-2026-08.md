@@ -34,7 +34,7 @@ do not justify permanent runtime branches.
 | Alerts | Small read-only alert webapp | review complete; retired | Merged into Console in v0.7.0 |
 | Navigation Reference | Source-aware navigation reference | first pass complete | Retain authority; candidate navigation package module |
 | GPS Integrity | Navigation trust provider | first pass complete | Candidate navigation package module |
-| DR Plotter | Operational DR webapp | queued | Candidate navigation package webapp |
+| DR Plotter | Operational DR webapp | first pass complete | Candidate navigation package webapp |
 | Traffic | AIS encounter authority | queued | Retain separately as the live collision-risk authority |
 | Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | queued | Retain separately |
@@ -198,6 +198,26 @@ This preserves different failure and privilege domains. In particular:
   `deadReckoning.integrity.*` paths. The full integrity state still temporarily
   carries its older internal `deadReckoning` member until remaining consumer
   fallbacks are removed as part of the Navigation Integrity merger.
+
+### DR Plotter
+
+- Version 0.7.0 confirms that DR Plotter belongs in the proposed Navigation
+  Integrity package: it requires GPS Integrity, renders that authority's exact
+  state, and sends observed fixes back to GPS Integrity. It does not own a
+  separate navigation decision.
+- All track, plot-fix and settings mutations now require Signal K write access;
+  every current route has an OpenAPI description.
+- `stop()` now waits for in-flight navigation-state and plot-fix persistence,
+  and clears its published status projection. Disabled/stopped instances no
+  longer record startup or subscription state.
+- Status and documentation claimed that the private `plot-fixes.json` and
+  `operational-track.json` files were copied into Capture bundles. Current
+  Capture v0.8 does not read those files; the false `capturePath`/`captureFile`
+  contract was removed.
+- The operational DR state track is already recorded canonically by Capture.
+  Navigator plot fixes still need an explicit current voyage handoff when the
+  Navigation Integrity and Voyages package boundaries are implemented; this
+  must be a versioned API/module contract, not direct private-file coupling.
 
 ## Signal K conformance backlog
 
