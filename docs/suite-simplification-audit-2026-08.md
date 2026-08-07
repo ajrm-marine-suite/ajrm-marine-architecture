@@ -35,7 +35,7 @@ do not justify permanent runtime branches.
 | Navigation Reference | Source-aware navigation reference | first pass complete | Retain authority; candidate navigation package module |
 | GPS Integrity | Navigation trust provider | first pass complete | Candidate navigation package module |
 | DR Plotter | Operational DR webapp | first pass complete | Candidate navigation package webapp |
-| Traffic | AIS encounter authority | queued | Retain separately as the live collision-risk authority |
+| Traffic | AIS encounter authority | first pass complete | Retain separately as the live collision-risk authority |
 | Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | queued | Retain separately |
 | Notifications | Generic notification broker | first pass complete | Retain as backend authority; UI moved to Console |
@@ -247,6 +247,29 @@ This preserves different failure and privilege domains. In particular:
 - The former Instrument Alerts v0.8.0 package is now a disabled inert retirement
   marker. Its implementation and duplicate webapp were removed. Updating or
   uninstalling it prevents two providers from announcing the same thresholds.
+
+### Traffic
+
+- Traffic v0.7.0 remains a separate safety authority. It owns AIS observation
+  qualification, CPA/TCPA, encounter lifecycle, wording, profiles, silencing,
+  and standard collision notifications; no Vessel Database persistence or UI
+  was merged into it.
+- Restart now replaces both Subscription Manager subscriptions, resets all
+  session-scoped publication caches, and invalidates outstanding harbour-region
+  loads. Post-stop deltas, calculations, and region refreshes are ignored.
+- Stop clears active notifications and all six retained
+  `plugins.ajrmMarineTraffic.*` projections, rather than leaving clients with a
+  stale authoritative session after the provider is disabled.
+- Every profile, Auto Profile, audio-policy, and target-silence mutation now
+  requires Signal K read/write or admin access. OpenAPI now describes every
+  registered route and both supported PUT/POST command forms.
+- Obsolete persisted `muted` and `manualMute` placeholders were removed. Mute
+  remains intentionally runtime-only. Capture terminology replaces the last
+  Logger names in current replay tests and documentation.
+- The collision calculation and notification policy remained unchanged and its
+  complete 155-test suite passed, including SAR-aircraft exclusion, hovercraft
+  inclusion, source-qualified AIS class, timing/freshness, downgrade holds,
+  COLREG disclaimer constraints, and replay warm-up suppression.
 
 ## Signal K conformance backlog
 
