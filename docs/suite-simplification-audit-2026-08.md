@@ -30,7 +30,7 @@ do not justify permanent runtime branches.
 
 | Package | Current role | Review state | Initial disposition |
 | --- | --- | --- | --- |
-| Console | Suite shell, help, BITE | queued | Retain; candidate to absorb Alerts webapp |
+| Console | Suite shell, help, BITE | first pass complete | Retain; candidate to absorb Alerts webapp |
 | Alerts | Small read-only alert webapp | queued | Candidate to become a Console view |
 | Navigation Reference | Source-aware navigation reference | first pass complete | Retain authority; candidate navigation package module |
 | GPS Integrity | Navigation trust provider | queued | Candidate navigation package module |
@@ -40,7 +40,7 @@ do not justify permanent runtime branches.
 | Display | Live chart and traffic display | queued | Retain separately |
 | Notifications | Generic notification broker | queued | Retain separately |
 | Audio | Audio timeline and delivery | queued | Retain separately |
-| Capture | Canonical recorder, replay, voyages | in progress | Candidate to absorb Voyage Viewer |
+| Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
 | Voyage Viewer | Read-only voyage analysis | queued | Candidate Capture view/module |
 | Instruments | Configurable instrument display | queued | Candidate to absorb Instrument Alerts |
 | Instrument Alerts | Instrument notification provider | queued | Candidate Instruments module |
@@ -102,10 +102,22 @@ This preserves different failure and privilege domains. In particular:
   canonical replay result and durable recomputed output instead.
 - Signal K `stop()` now awaits active-voyage preservation rather than starting
   asynchronous finalisation and returning immediately.
-- A later breaking cleanup will remove the legacy converter, reference-mode
-  portable-download rebuilding, dead Logger API/HTTP fallbacks, and old capture
-  index fields after Voyage Viewer and Console are cut over to canonical input
-  and recomputed output only.
+- Version 0.8.0 removes the legacy converter, reference-mode portable-download
+  rebuilding, dead Logger API/HTTP fallbacks, capture-segment copying, old raw
+  capture indexing and old-directory discovery. The packaged implementation is
+  about 28 percent smaller (193.7 kB to 139.6 kB for `plugin/index.js`).
+- Version 0.8.0 also adds an OpenAPI document for every registered HTTP route.
+
+### Console
+
+- Version 0.6.23 removes three unreachable Logger BITE implementations, the
+  retired Logger API registry, Logger test fixtures, and the obsolete Capture
+  file-mode assertion (314 lines removed).
+- Console retains one intentional retirement filter so an accidentally
+  installed Logger marker is not presented as an active application.
+- Console already describes its HTTP routes with OpenAPI. Its larger BITE file
+  remains a candidate for decomposition into domain-focused modules during the
+  full Console review.
 
 ## Signal K conformance backlog
 
