@@ -39,7 +39,7 @@ do not justify permanent runtime branches.
 | Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | queued | Retain separately |
 | Notifications | Generic notification broker | first pass complete | Retain as backend authority; UI moved to Console |
-| Audio | Audio timeline and delivery | queued | Retain separately |
+| Audio | Audio timeline and delivery | first pass complete | Retain separately |
 | Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
 | Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
 | Instruments | Configurable instrument display | queued | Candidate to absorb Instrument Alerts |
@@ -161,6 +161,25 @@ This preserves different failure and privilege domains. In particular:
   idempotently, following the Signal K plugin lifecycle contract.
 - Unused saved-state serialization and the unused provider `broker: false`
   compatibility branch were removed; broker state is explicitly runtime-only.
+
+### Audio
+
+- Version 0.7.0 remains separate from Notifications because speech synthesis,
+  child processes, sound hardware and radio-stream clients form a distinct
+  failure domain from visual notification state.
+- Both the ordinary plugin router and Signal K API command routes now enforce
+  write access, and every current route is described by OpenAPI.
+- Asynchronous `stop()` now prevents new queue work, terminates active Piper,
+  FFmpeg and local-player processes, closes stream clients, and waits for the
+  public stream server to close.
+- Interrupted, superseded and failed preparations now remove temporary and
+  partially published audio artefacts. Only successfully delivered output is
+  retained.
+- The retired AIS Plus audio directory fallback and `aisPlusMuted` status alias
+  were removed. The current AJRM Marine directory and Traffic Audio Policy are
+  the only runtime contracts.
+- Repeated executable and voice scans during each status build were reduced by
+  sharing one dependency result.
 
 ## Signal K conformance backlog
 
