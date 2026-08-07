@@ -44,7 +44,7 @@ do not justify permanent runtime branches.
 | Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
 | Instruments | Display and instrument notification provider | review and merger complete | Retain combined package |
 | Instrument Alerts | Retirement marker only | retired | Merged into Instruments in v0.8.0 |
-| Harbour Editor | Harbour resource editor/provider | queued | Retain separately |
+| Harbour Editor | Harbour resource editor/provider | first pass complete | Retain separately |
 | Simulator | Optional test data source | queued | Retain separately |
 | Snapshot | Optional diagnostic evidence provider | queued | Retain separately |
 | Pi Controller | Privileged Pi operations | queued | Retain separately |
@@ -318,6 +318,29 @@ This preserves different failure and privilege domains. In particular:
 - The package dropped unused Lodash and obsolete `AisPlus` internal naming.
   All 356 tests, production dependency audit, build, scaffold validation,
   package dry-run and diff checks passed.
+
+### Harbour Editor
+
+- Harbour Editor v0.7.0 remains a separate durable Signal K `regions`
+  resource editor. It does not belong in Display or Traffic merely because all
+  three render harbour geometry.
+- Every region edit, deletion, import and merge now requires Signal K
+  read/write or administrator access, and OpenAPI describes all seven routes.
+- The browser and plugin previously implemented import and merge separately;
+  the browser also deleted the old harbour set before attempting replacement.
+  The plugin is now the sole implementation. Replacement validates and writes
+  a fresh-UUID set first, rolls it back on write failure, and only then deletes
+  the prior `Harbour:` resources.
+- UUID, prefix, polygon type, ring closure, coordinate range, duplicate-id and
+  import-size validation now happen before resource writes. Explicit edits and
+  deletes cannot overwrite an unrelated non-harbour region by UUID.
+- Partial bundled-default seeding is rolled back on failure. Stop waits for
+  in-flight resource operations and retracts retained status.
+- Retired `aisPlus:` catalogue metadata became `ajrmMarine:` provenance keys;
+  the obsolete profile property was removed because Traffic's documented
+  contract selects harbour resources by their `Harbour:` name prefix.
+- All 14 tests, production dependency audit, syntax checks, package dry-run and
+  diff checks passed.
 
 ## Signal K conformance backlog
 
