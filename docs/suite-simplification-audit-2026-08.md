@@ -41,7 +41,7 @@ do not justify permanent runtime branches.
 | Notifications | Generic notification broker | queued | Retain separately |
 | Audio | Audio timeline and delivery | queued | Retain separately |
 | Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
-| Voyage Viewer | Read-only voyage analysis | queued | Candidate Capture view/module |
+| Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
 | Instruments | Configurable instrument display | queued | Candidate to absorb Instrument Alerts |
 | Instrument Alerts | Instrument notification provider | queued | Candidate Instruments module |
 | Harbour Editor | Harbour resource editor/provider | queued | Retain separately |
@@ -118,6 +118,22 @@ This preserves different failure and privilege domains. In particular:
 - Console already describes its HTTP routes with OpenAPI. Its larger BITE file
   remains a candidate for decomposition into domain-focused modules during the
   full Console review.
+
+### Voyage Viewer
+
+- Version 0.7.0 makes current self-contained Capture bundles the only runtime
+  input and removes raw-log, Clips, embedded-segment, external-Logger and old
+  plot-cache fallbacks (net 280 lines removed across the release).
+- Its generic file-kind HTTP surface is now a voyage-only API with a complete
+  OpenAPI description.
+- The recomputation review was still validating the retired Logger-era result
+  segment manifest. It now validates Capture's current replay-result contract,
+  explicit timing validity, durable checkpoint, recomputed-output contract and
+  exact embedded byte count.
+- Capture and Viewer now agree on one store and one bundle contract. Their
+  remaining cross-package API is only download preparation, making them ready
+  for a later package-boundary merge without first mixing compatibility logic
+  into that migration.
 
 ## Signal K conformance backlog
 
