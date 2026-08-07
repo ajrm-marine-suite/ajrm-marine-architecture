@@ -362,6 +362,25 @@ This preserves different failure and privilege domains. In particular:
 - All 58 tests, production dependency audit, package dry-run and diff checks
   passed.
 
+### Snapshot
+
+- Snapshot v0.7.0 remains a small standalone diagnostic provider because both
+  Capture and Console consume its in-process API. Merging it into either
+  consumer would invert the other dependency and duplicate snapshot policy.
+- Restart releases the prior subscriptions and API registrations before
+  creating a new session. Plugin version/readiness now use Signal K's standard
+  plugin status surface.
+- The suite summary reads collision profiles, Auto Profile, audio policy and
+  targets directly from Traffic. Display remains the source only for rendered
+  alert/announcement history and harbour geometry.
+- Retired Logger, Companion, old announcer and split Alerts/Instrument Alerts
+  compatibility were removed from options, UI, diagnostics and package
+  discovery. Remote access remains explicit opt-in and now rejects an
+  explicitly unauthenticated Signal K request.
+- Local diagnostic HTTP responses are bounded to 2 MiB. OpenAPI matches both
+  read-only routes. All 25 tests, production dependency audit, package dry-run
+  and diff checks passed.
+
 ## Signal K conformance backlog
 
 - Add or complete `getOpenApi()` for every package that registers HTTP routes.
