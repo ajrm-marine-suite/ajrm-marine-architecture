@@ -42,8 +42,8 @@ do not justify permanent runtime branches.
 | Audio | Audio timeline and delivery | first pass complete | Retain separately |
 | Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
 | Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
-| Instruments | Configurable instrument display | first pass complete | Candidate to absorb Instrument Alerts |
-| Instrument Alerts | Instrument notification provider | first pass complete | Candidate Instruments module |
+| Instruments | Display and instrument notification provider | review and merger complete | Retain combined package |
+| Instrument Alerts | Retirement marker only | retired | Merged into Instruments in v0.8.0 |
 | Harbour Editor | Harbour resource editor/provider | queued | Retain separately |
 | Simulator | Optional test data source | queued | Retain separately |
 | Snapshot | Optional diagnostic evidence provider | queued | Retain separately |
@@ -240,6 +240,13 @@ This preserves different failure and privilege domains. In particular:
   and expose its editor as an Instruments view. Display rendering must not own
   threshold decisions, and the standard notification paths must remain useful
   when Notifications or Audio is absent.
+- Instruments v0.8.0 completes that merger. The evaluator, AJRM notification
+  envelope adapter, settings persistence, and editor moved unchanged behind
+  `/alerts/*` routes and `alerts.html`; the main status includes provider state
+  and the package has one combined 42-test suite.
+- The former Instrument Alerts v0.8.0 package is now a disabled inert retirement
+  marker. Its implementation and duplicate webapp were removed. Updating or
+  uninstalling it prevents two providers from announcing the same thresholds.
 
 ## Signal K conformance backlog
 
