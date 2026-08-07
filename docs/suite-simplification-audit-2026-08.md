@@ -427,6 +427,9 @@ to test and recover.
   map listeners when removed. Event-target validation no longer assumes a
   browser-global `HTMLInputElement`, which also makes the shared control easier
   to test and embed.
+- Display, DR Plotter, Harbour Editor and Voyage Viewer v0.7.1 pin and bundle
+  the reviewed Map Core v0.7.0 release. Voyage Viewer also moves from Node.js
+  18 to the suite Node.js 20 baseline.
 - All 12 tests, package dry-run and diff checks passed. The library has no
   production dependencies or HTTP surface.
 
