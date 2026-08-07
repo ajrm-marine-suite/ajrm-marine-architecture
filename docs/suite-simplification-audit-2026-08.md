@@ -42,8 +42,8 @@ do not justify permanent runtime branches.
 | Audio | Audio timeline and delivery | first pass complete | Retain separately |
 | Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
 | Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
-| Instruments | Configurable instrument display | queued | Candidate to absorb Instrument Alerts |
-| Instrument Alerts | Instrument notification provider | queued | Candidate Instruments module |
+| Instruments | Configurable instrument display | first pass complete | Candidate to absorb Instrument Alerts |
+| Instrument Alerts | Instrument notification provider | first pass complete | Candidate Instruments module |
 | Harbour Editor | Harbour resource editor/provider | queued | Retain separately |
 | Simulator | Optional test data source | queued | Retain separately |
 | Snapshot | Optional diagnostic evidence provider | queued | Retain separately |
@@ -218,6 +218,28 @@ This preserves different failure and privilege domains. In particular:
   Navigator plot fixes still need an explicit current voyage handoff when the
   Navigation Integrity and Voyages package boundaries are implemented; this
   must be a versioned API/module contract, not direct private-file coupling.
+
+### Instruments and Instrument Alerts
+
+- Instruments v0.7.0 and Instrument Alerts v0.7.0 establish reviewed,
+  independently releasable baselines before the package merger. Both now
+  declare Node 20 and OpenAPI; both own restart/stop state explicitly.
+- Instruments safely replaces subscriptions on restart and no longer accepts
+  the obsolete `engineRoomTemperaturePath` configuration alias. Its custom
+  pilot-helm and signed-XTE paths remain intentional current-suite contracts:
+  they gate ambiguous raw tiller-pilot data and give the alert engine one
+  nullable, unit-defined input.
+- Instrument Alerts write operations now require Signal K read/write or admin
+  access. Its notification output remains standard `notifications.*` state,
+  method and message; the richer AJRM envelope remains optional data rather
+  than replacing the Signal K contract.
+- The one-time migration from the pre-suite
+  `audible-instruments-settings.json` name was removed. The current runtime
+  settings file and monitor contract remain unchanged.
+- The merger should retain the monitor evaluator as an internal provider module
+  and expose its editor as an Instruments view. Display rendering must not own
+  threshold decisions, and the standard notification paths must remain useful
+  when Notifications or Audio is absent.
 
 ## Signal K conformance backlog
 
