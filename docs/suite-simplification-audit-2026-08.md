@@ -36,7 +36,7 @@ do not justify permanent runtime branches.
 | GPS Integrity | Navigation trust provider | first pass complete | Candidate navigation package module |
 | DR Plotter | Operational DR webapp | first pass complete | Candidate navigation package webapp |
 | Traffic | AIS encounter authority | first pass complete | Retain separately as the live collision-risk authority |
-| Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
+| Vessel Database | Vessel enrichment store/editor | first pass complete | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | queued | Retain separately |
 | Notifications | Generic notification broker | first pass complete | Retain as backend authority; UI moved to Console |
 | Audio | Audio timeline and delivery | first pass complete | Retain separately |
@@ -270,6 +270,29 @@ This preserves different failure and privilege domains. In particular:
   complete 155-test suite passed, including SAR-aircraft exclusion, hovercraft
   inclusion, source-qualified AIS class, timing/freshness, downgrade holds,
   COLREG disclaimer constraints, and replay warm-up suppression.
+
+### Vessel Database
+
+- Vessel Database v0.8.0 remains separate from Traffic. It is the durable MMSI
+  identity and static-particulars authority; Traffic remains the live
+  observation, encounter, CPA/TCPA, and collision-notification authority.
+- All import, online-lookup, deletion and test-cleanup mutations now require
+  Signal K read/write or administrator access. OpenAPI describes every current
+  route, including cancellation and bulk deletion.
+- Restart now owns exactly one raw delta listener, resets session statistics,
+  and cancels an in-flight ITU MARS lookup. Abort propagation prevents a remote
+  response from saving data, publishing status, or changing plugin state after
+  shutdown.
+- The raw all-context delta listener is retained intentionally: static AIS
+  discovery needs vessel context, source, timestamp and grouped update values;
+  a bounded self-vessel subscription cannot provide that contract.
+- The duplicate bulk-delete route and one-time obsolete dimension scrub were
+  removed. Generic `design.dimensions` remains ignored, while only current
+  standard AIS antenna offsets are learned and filled.
+- Stop retracts the retained summary only when summary publication is enabled.
+  The reviewed package passes 27 tests, including lifecycle, access-control,
+  OpenAPI parity, import validation, SAR-aircraft classification and exact-MMSI
+  test cleanup.
 
 ## Signal K conformance backlog
 
