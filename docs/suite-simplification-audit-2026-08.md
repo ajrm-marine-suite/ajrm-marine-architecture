@@ -38,7 +38,7 @@ do not justify permanent runtime branches.
 | Traffic | AIS encounter authority | queued | Retain separately as the live collision-risk authority |
 | Vessel Database | Vessel enrichment store/editor | queued | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | queued | Retain separately |
-| Notifications | Generic notification broker | queued | Retain separately |
+| Notifications | Generic notification broker | first pass complete | Retain as backend authority; UI moved to Console |
 | Audio | Audio timeline and delivery | queued | Retain separately |
 | Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
 | Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
@@ -143,6 +143,24 @@ This preserves different failure and privilege domains. In particular:
   remaining cross-package API is only download preparation, making them ready
   for a later package-boundary merge without first mixing compatibility logic
   into that migration.
+
+### Notifications
+
+- Version 0.7.0 remains an independent backend authority, but removes its
+  redundant diagnostics webapp. Console Alerts is now the single normal alert
+  interface; BITE and the documented HTTP API retain diagnostic access.
+- Active-envelope expiry now schedules its own publication. Previously an
+  expired alert could remain visible indefinitely until another notification
+  or HTTP status request happened.
+- Whole-tree Signal K notification deltas now preserve nested `null` leaves,
+  so standard clears are not lost while flattening the tree.
+- Stale active/resolved envelopes and duplicate events are rejected before
+  supersession, source remapping or Audio delivery. Expiry no longer makes an
+  unrelated rejected event audible.
+- `start()` and `stop()` now own subscriptions and the expiry timer
+  idempotently, following the Signal K plugin lifecycle contract.
+- Unused saved-state serialization and the unused provider `broker: false`
+  compatibility branch were removed; broker state is explicitly runtime-only.
 
 ## Signal K conformance backlog
 
