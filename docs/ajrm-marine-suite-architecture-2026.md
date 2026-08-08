@@ -1,7 +1,7 @@
 # AJRM Marine Suite Architecture 2026
 
 Status: current public beta architecture  
-Date: 2026-07-03  
+Date: 2026-08-08
 Applies to: AJRM Marine public repositories under `ajrm-marine-suite`
 
 ## 1. Design Intent
@@ -23,10 +23,11 @@ The design principles are:
    resources, metadata, security, and subscriptions are the public integration
    layer.
 3. **Small authorities.** Traffic owns AIS encounter meaning. Audio owns the
-   audible timeline. GPS Integrity owns GPS/DR trust evaluation. Capture owns
-   canonical recording, replay, and voyage bundling.
-4. **No hidden client policy.** Display, Console, Alerts, Voyage Viewer, DR
-   Plotter, Instruments, desktop audio players, and OpenCPN panels must not
+   audible timeline. Navigation Integrity owns source selection, GPS/DR trust,
+   and operational dead reckoning. Capture owns canonical recording, replay,
+   voyage bundling, and voyage review.
+4. **No hidden client policy.** Display, Console, Alerts, Capture review,
+   Navigation Integrity's DR Plotter, Instruments, desktop audio players, and OpenCPN panels must not
    reimplement safety decisions from prose or private assumptions.
 5. **Observable by design.** A voyage capture should contain enough Signal K
    state, diagnostics, snapshots, and BITE results to explain what happened
@@ -42,34 +43,31 @@ The design principles are:
 | App | Package | Responsibility |
 | --- | --- | --- |
 | AJRM Marine Console | `signalk-ajrm-marine-console` | Suite entry point, help, BITE, app status, tabbed workspace |
-| AJRM Marine Navigation Reference | `signalk-ajrm-marine-navigation-reference` | Source-aware bow heading, coherent ground track, local WMM, and current/leeway provenance |
 | AJRM Marine Traffic | `signalk-ajrm-marine-traffic` | AIS CPA/TCPA, encounter wording, profiles, voyage state, audio policy |
 | AJRM Marine Display | `signalk-ajrm-marine-display` | Chart display, traffic rendering, profile controls, visual alert panel |
 | AJRM Marine Notifications | `signalk-ajrm-marine-notifications` | Active/recent notification projection, lifecycle, deduplication |
 | AJRM Marine Audio | `signalk-ajrm-marine-audio` | Piper rendering, audio queue, speaker/stream/desktop-player delivery |
 | AJRM Marine Alerts | `signalk-ajrm-marine-alerts` | Read-only compact alert display for crew devices |
-| AJRM Marine Capture | `signalk-ajrm-marine-capture` | Canonical recording and replay, voyage orchestration, comments, snapshots, portable debug bundles |
+| AJRM Marine Capture | `signalk-ajrm-marine-capture` | Canonical recording and replay, voyage orchestration, comments, snapshots, portable debug bundles, and voyage review |
 
 ### Navigation Integrity
 
 | App | Package | Responsibility |
 | --- | --- | --- |
-| AJRM Marine GPS Integrity | `signalk-ajrm-marine-gps-integrity` | GPS trust evaluation, jump/outage/weak-signal/mismatch diagnostics |
-| AJRM Marine DR Plotter | `signalk-ajrm-marine-dr-plotter` | Dead reckoning, electronic/estimated/observed fixes, uncertainty display |
+| AJRM Marine Navigation Integrity | `signalk-ajrm-marine-gps-integrity` | Source-aware heading/track reference, WMM variation, GPS trust evaluation, DR calculations, plotted fixes, track history, and embedded DR Plotter |
 
 ### Voyage Review and Replay
 
 | App | Package | Responsibility |
 | --- | --- | --- |
-| AJRM Marine Voyage Viewer | `signalk-ajrm-marine-voyage-viewer` | Analyse voyage bundles, plot tracks, summarise GPS/DR and alerts |
+| AJRM Marine Capture review | `signalk-ajrm-marine-capture` | Analyse voyage bundles, plot tracks, summarise GPS/DR and alerts |
 | AJRM Marine Snapshot | `signalk-ajrm-marine-snapshot` | System and plugin diagnostics snapshot |
 
 ### Instruments and Environment
 
 | App | Package | Responsibility |
 | --- | --- | --- |
-| AJRM Marine Instruments | `signalk-ajrm-marine-instruments` | Large-format instrument display |
-| AJRM Marine Instrument Alerts | `signalk-ajrm-marine-instrument-alerts` | Depth, wind, temperature, and other instrument alerting |
+| AJRM Marine Instruments | `signalk-ajrm-marine-instruments` | Large-format instrument display plus depth, wind, temperature, and other instrument alerting |
 | AJRM Marine Harbour Editor | `signalk-ajrm-marine-harbour-editor` | Local harbour/anchorage regions and profile boundaries |
 | AJRM Marine Vessel Database | `signalk-ajrm-marine-vessel-database` | Local vessel names, sizes, and lookup enrichment |
 
@@ -89,8 +87,8 @@ flowchart LR
 
   subgraph Providers["Domain providers"]
     Traffic["Traffic"]
-    GPS["GPS Integrity"]
-    InstrAlerts["Instrument Alerts"]
+    GPS["Navigation Integrity"]
+    InstrumentSuite["Instruments alert provider"]
     Sim["Simulator"]
     Other["Other Signal K apps"]
   end
@@ -103,8 +101,8 @@ flowchart LR
     Console["Console"]
     Display["Display"]
     Alerts["Alerts"]
-    Plotter["DR Plotter"]
-    Viewer["Voyage Viewer"]
+    Plotter["Embedded DR Plotter"]
+    Viewer["Capture voyage review"]
     Instruments["Instruments"]
     Player["Desktop Audio Player"]
     OpenCPN["OpenCPN message panel"]
@@ -163,25 +161,29 @@ speaker, stream, browser, desktop player, and diagnostic consumers.
 Outputs are sinks. They do not reorder, reprioritise, or reinterpret
 announcements.
 
-### GPS Integrity and DR Plotter
+### Navigation Integrity
 
-GPS Integrity evaluates incoming GPS/GNSS against movement, signal quality,
-position jumps, lost fixes, and dead reckoning checks. It publishes compact
-diagnostics for capture and voyage review.
+Navigation Integrity first selects a source-aware bow heading and coherent
+ground track, including local WMM magnetic variation and explicit provenance.
+It then evaluates GPS/GNSS against movement, signal quality, position jumps,
+lost fixes, and dead-reckoning checks. Its embedded DR Plotter displays
+operational dead reckoning, estimated positions, observed fixes, uncertainty,
+vectors, and plot history. When GPS is lost, DR uses the last reliable current
+set/drift rather than assuming live current data will continue.
 
-DR Plotter displays operational dead reckoning, estimated positions, observed
-fixes, uncertainty, vectors, and plot history. When GPS is lost, DR uses the
-last reliable current set/drift rather than assuming live current data will
-continue.
+The historic Navigation Reference and DR Plotter provider identities, Signal K
+paths, runtime APIs, configuration, and data directories remain stable inside
+the combined package. The standalone packages are retired and must not run
+alongside it.
 
-### Capture, Snapshot, and Voyage Viewer
+### Capture and Snapshot
 
 Capture owns canonical physical-input recordings, replay, voyage start/stop,
 timestamped observation JSONL, optional structured diagnostic Snapshot evidence,
-parent/child replay lineage, and portable bundles. Snapshot owns point-in-time
-system diagnostic collection. Voyage Viewer is read-only analysis and plotting.
-The former standalone Logger package is retired and is not part of the active
-suite architecture.
+parent/child replay lineage, portable bundles, and read-only voyage analysis and
+plotting. Snapshot owns point-in-time system diagnostic collection. The former
+standalone Logger and Voyage Viewer packages are retired and are not part of
+the active suite architecture.
 
 Replay should republish source data rather than derived outputs where possible,
 so current plugin logic can be exercised again.
@@ -204,7 +206,7 @@ Persistent:
 - Vessel database entries.
 - Capture canonical recordings, voyage bundles, observation logs, optional evidence, and replay
   lineage.
-- DR Plotter plotted fixes and track history where configured.
+- Navigation Integrity DR plotted fixes and track history where configured.
 - BITE result summaries.
 
 Session-scoped:
