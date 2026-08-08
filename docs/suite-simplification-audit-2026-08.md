@@ -1,6 +1,6 @@
 # AJRM Marine Suite Simplification Audit
 
-Status: first-pass review complete; package-boundary migrations pending
+Status: package-boundary migrations and retirement cleanup complete
 Started: 2026-08-07
 
 ## Objective
@@ -32,16 +32,16 @@ do not justify permanent runtime branches.
 | --- | --- | --- | --- |
 | Console | Suite shell, help, BITE | first pass complete | Retain; candidate to absorb Alerts webapp |
 | Alerts | Small read-only alert webapp | review complete; retired | Merged into Console in v0.7.0 |
-| Navigation Reference | Source-aware navigation reference | first pass complete | Retain authority; candidate navigation package module |
-| GPS Integrity | Navigation trust provider | first pass complete | Candidate navigation package module |
-| DR Plotter | Operational DR webapp | first pass complete | Candidate navigation package webapp |
+| Navigation Reference | Source-aware navigation reference | merged | Internal GPS Integrity module; standalone package retired |
+| GPS Integrity | Navigation trust provider | merger complete | Active combined navigation package |
+| DR Plotter | Operational DR webapp | merged | GPS Integrity view; standalone package retired |
 | Traffic | AIS encounter authority | first pass complete | Retain separately as the live collision-risk authority |
 | Vessel Database | Vessel enrichment store/editor | first pass complete | Retain separately as persistent identity administration |
 | Display | Live chart and traffic display | first pass complete | Retain separately |
 | Notifications | Generic notification broker | first pass complete | Retain as backend authority; UI moved to Console |
 | Audio | Audio timeline and delivery | first pass complete | Retain separately |
-| Capture | Canonical recorder, replay, voyages | first pass complete | Candidate to absorb Voyage Viewer |
-| Voyage Viewer | Read-only voyage analysis | first pass complete | Candidate Capture view/module |
+| Capture | Recorder, replay, voyages, and review | merger complete | Active combined voyage package |
+| Voyage Viewer | Read-only voyage analysis | merged | Capture review view; standalone package retired |
 | Instruments | Display and instrument notification provider | review and merger complete | Retain combined package |
 | Instrument Alerts | Retirement marker only | retired | Merged into Instruments in v0.8.0 |
 | Harbour Editor | Harbour resource editor/provider | first pass complete | Retain separately |
@@ -58,9 +58,7 @@ client, not a Signal K plugin or installation boundary.
 ## Recommended target installation boundaries
 
 The detailed reviews confirm a target of thirteen active Signal K packages.
-The current reviewed baselines keep sixteen active packages; the remaining
-reduction is delivered by two explicit, separately tested migrations rather
-than by mixing those changes into the cleanup releases:
+The reviewed and released baseline now has thirteen active packages:
 
 1. Console, including the compact read-only Alerts view.
 2. Navigation Integrity, containing Navigation Reference, GPS Integrity, and
@@ -90,13 +88,10 @@ This preserves different failure and privilege domains. In particular:
 - Pi Controller remains isolated because it performs privileged host actions.
 - Simulator remains optional and removable from a sailing installation.
 
-The remaining boundary migrations are:
-
-1. Combine Navigation Reference, GPS Integrity and DR Plotter into one
-   Navigation Integrity install while retaining three internal modules and the
-   existing standard Signal K outputs.
-2. Combine Capture and Voyage Viewer into one Voyages install with a single
-   voyage store and one lifecycle.
+Both boundary migrations are complete. GPS Integrity contains Navigation
+Reference and DR Plotter, while Capture contains voyage review. Their internal
+status projections remain versioned component contracts; they no longer imply
+separately installable plugins.
 
 Traffic and Vessel Database explicitly remain separate. Traffic owns transient
 AIS encounter and collision-risk state; Vessel Database owns durable identity,
