@@ -53,7 +53,9 @@ do not justify permanent runtime branches.
 `@ajrm-marine/map-core` is a reviewed shared browser library, not a Signal K
 plugin. It continues to standardise map controls without merging the four
 different map applications. AJRM Marine Audio Player is a separate desktop
-client, not a Signal K plugin or installation boundary.
+client, not a Signal K plugin or installation boundary. Its canonical source
+is the `desktop-player` directory in the AJRM Marine Audio repository so the
+server contract and desktop packages cannot drift across duplicate repos.
 
 ## Recommended target installation boundaries
 
