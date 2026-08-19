@@ -31,7 +31,8 @@ reference.
 | `signalk-ajrm-marine-gps-integrity` | AJRM Marine GPS Integrity |
 | `signalk-ajrm-marine-dr-plotter` | AJRM Marine DR Plotter |
 | `signalk-ajrm-marine-simulator` | AJRM Marine Simulator |
-| `signalk-ajrm-marine-harbour-editor` | AJRM Marine Harbour Editor |
+| `signalk-ajrm-marine-location-editor` | AJRM Marine Location Editor |
+| `signalk-ajrm-marine-planning` | AJRM Marine Planning |
 | `signalk-ajrm-marine-vessel-database` | AJRM Marine Vessel Database |
 | `signalk-ajrm-marine-instruments` | AJRM Marine Instruments |
 | `signalk-ajrm-marine-instrument-alerts` | AJRM Marine Instrument Alerts |

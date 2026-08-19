@@ -68,7 +68,8 @@ The design principles are:
 | App | Package | Responsibility |
 | --- | --- | --- |
 | AJRM Marine Instruments | `signalk-ajrm-marine-instruments` | Large-format instrument display plus depth, wind, temperature, and other instrument alerting |
-| AJRM Marine Harbour Editor | `signalk-ajrm-marine-harbour-editor` | Local harbour/anchorage regions and profile boundaries |
+| AJRM Marine Location Editor | `signalk-ajrm-marine-location-editor` | Versioned locations, automatic profile areas, tidal ports/regions, weather, tides and anchoring assistance |
+| AJRM Marine Planning | `signalk-ajrm-marine-planning` | Gate-passage and anchor-force planning over the shared Locations, tide and weather services |
 | AJRM Marine Vessel Database | `signalk-ajrm-marine-vessel-database` | Local vessel names, sizes, and lookup enrichment |
 
 ### Operations and Testing
