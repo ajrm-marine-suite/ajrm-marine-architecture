@@ -16,7 +16,8 @@ The architecture rule is simple:
 
 ## Current Documents
 
-- [AJRM Marine Suite Architecture 2026](docs/ajrm-marine-suite-architecture-2026.md)
+- [AJRM Marine Current Architecture](docs/current-architecture.md)
+- [AJRM Marine Suite Architecture 2026 historical baseline](docs/ajrm-marine-suite-architecture-2026.md)
 - [Compatibility contracts](docs/compatibility-contracts.md)
 - [Implementation and verification plan](docs/implementation-plan.md)
 - [Pre-public hardening checklist](docs/pre-public-hardening.md)
@@ -51,13 +52,14 @@ boundaries:
   supersession.
 - Audio, Piper rendering, speaker/stream/desktop-player delivery, and audible
   timeline rules.
-- Display, Console, Alerts, OpenCPN message display, and other visual clients.
-- Capture, Snapshot, Voyage Viewer, and replay/debug workflows.
-- GPS Integrity and DR Plotter, including lost-GPS fallback, independent DR,
+- Display, Console's Alerts view, OpenCPN message display, and other visual clients.
+- Voyages, Snapshot, replay, recapture, review, and debug workflows.
+- Navigation Integrity and its DR Plotter, including lost-GPS fallback, independent DR,
   plotted fixes, and diagnostics.
 - Own-vessel navigation reference selection, magnetic variation, compass/COG
   fallback, current/leeway provenance, and DR independence.
 - Simulator and BITE as repeatable test infrastructure.
+- Locations, Tidal Database, Weather Database and Marine Planning ownership.
 - Publication, AppStore readiness, and public repository expectations.
 
 ## Authorship

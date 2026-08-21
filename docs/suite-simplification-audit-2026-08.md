@@ -44,7 +44,11 @@ do not justify permanent runtime branches.
 | Voyage Viewer | Read-only voyage analysis | merged | Capture review view; standalone package retired |
 | Instruments | Display and instrument notification provider | review and merger complete | Retain combined package |
 | Instrument Alerts | Retirement marker only | retired | Merged into Instruments in v0.8.0 |
-| Harbour Editor | Harbour resource editor/provider | first pass complete | Retain separately |
+| Harbour Editor | Historical harbour editor | retired | Replaced by Location Editor |
+| Location Editor | Versioned spatial catalogue and anchoring assistance | active | Sole location/geometry owner |
+| Tidal Database | Tide providers, cache, port definitions and region relationships | active | Sole tidal-data owner |
+| Weather Database | Weather providers, cache and forecast resolution | active | Sole weather-data owner |
+| Marine Planning | Gate and anchor planning consumer | active | Read-only consumer of shared services |
 | Simulator | Optional test data source | first pass complete | Retain separately |
 | Snapshot | Optional diagnostic evidence provider | first pass complete | Retain separately |
 | Pi Controller | Privileged Pi operations | first pass complete | Retain separately |
@@ -57,10 +61,9 @@ client, not a Signal K plugin or installation boundary. Its canonical source
 is the `desktop-player` directory in the AJRM Marine Audio repository so the
 server contract and desktop packages cannot drift across duplicate repos.
 
-## Recommended target installation boundaries
+## Current installation boundaries
 
-The detailed reviews confirm a target of thirteen active Signal K packages.
-The reviewed and released baseline now has thirteen active packages:
+The reviewed suite now has sixteen active Signal K packages:
 
 1. Console, including the compact read-only Alerts view.
 2. Navigation Integrity, containing Navigation Reference, GPS Integrity, and
@@ -70,12 +73,15 @@ The reviewed and released baseline now has thirteen active packages:
 5. Display.
 6. Notifications.
 7. Audio.
-8. Voyages, containing Capture and Voyage Viewer with one voyage store.
+8. Voyages, containing recording, replay and review with one voyage store.
 9. Instruments, including instrument alert rules.
-10. Harbour Editor.
-11. Simulator.
-12. Snapshot.
-13. Pi Controller.
+10. Location Editor.
+11. Tidal Database.
+12. Weather Database.
+13. Marine Planning.
+14. Simulator.
+15. Snapshot.
+16. Pi Controller.
 
 This preserves different failure and privilege domains. In particular:
 
@@ -86,7 +92,8 @@ This preserves different failure and privilege domains. In particular:
 - Vessel Database remains independent of Traffic: persistent vessel identity
   enrichment and bulk administration have a different lifecycle and failure
   mode from live CPA/TCPA and collision-risk evaluation.
-- Harbour Editor remains an independent durable-resource provider.
+- Location Editor remains the independent durable spatial provider. Tidal and
+  Weather Databases own their provider data and caches; Planning consumes them.
 - Pi Controller remains isolated because it performs privileged host actions.
 - Simulator remains optional and removable from a sailing installation.
 

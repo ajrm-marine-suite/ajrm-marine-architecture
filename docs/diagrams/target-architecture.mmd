@@ -1,66 +1,27 @@
 flowchart LR
-  SK[("Signal K data model")]
-
-  subgraph Inputs["Inputs and replay"]
-    Live["Live NMEA / Signal K feeds"]
-    Sim["AJRM Marine Simulator"]
-    CaptureReplay["AJRM Marine Capture replay"]
-  end
-
-  subgraph Providers["Domain providers"]
-    Traffic["AJRM Marine Traffic"]
-    GPS["AJRM Marine GPS Integrity"]
-    InstrumentAlerts["AJRM Marine Instrument Alerts"]
-    Other["Other Signal K apps"]
-  end
-
-  Notifications["AJRM Marine Notifications"]
-  Audio["AJRM Marine Audio"]
-
-  subgraph Outputs["Audio and visual outputs"]
-    Display["AJRM Marine Display"]
-    Alerts["AJRM Marine Alerts"]
-    Console["AJRM Marine Console"]
-    DrPlotter["AJRM Marine DR Plotter"]
-    Instruments["AJRM Marine Instruments"]
-    DesktopPlayer["AJRM Marine Audio Player"]
-    OpenCpn["OpenCPN message panel"]
-    ServerSpeaker["Server speaker / stream"]
-  end
-
-  subgraph Recording["Recording and review"]
-    Capture["AJRM Marine Capture"]
-    Snapshot["AJRM Marine Snapshot"]
-    Viewer["AJRM Marine Voyage Viewer"]
-    Bite["Console BITE"]
-  end
-
-  Live --> SK
-  Sim --> SK
-  CaptureReplay --> SK
-
-  SK --> Providers
-  Providers -->|"standard notifications + AJRM diagnostics"| SK
-
-  SK --> Notifications
-  Notifications -->|"active + recent projections"| Display
-  Notifications -->|"active + recent projections"| Alerts
-  Notifications -->|"OpenCPN message projection"| OpenCpn
-  Notifications -->|"audio delivery projection"| Audio
-
-  Traffic -->|"targets + profiles + audio policy + voyage state"| SK
-  GPS -->|"navigation integrity + DR diagnostics"| SK
-
-  Audio -->|"authoritative timeline + rendered assets"| DesktopPlayer
-  Audio --> ServerSpeaker
-
-  SK --> Display
-  SK --> DrPlotter
+  Inputs["Live sensors / Simulator / Voyage replay"] --> SK[(Signal K)]
+  SK --> Navigation["Navigation Integrity + DR Plotter"]
+  SK --> Traffic
   SK --> Instruments
-  SK --> Console
+  Navigation --> Notifications
+  Traffic --> Notifications
+  Instruments --> Notifications
+  Notifications --> Audio
+  Notifications --> Display
+  Audio --> Outputs["Speaker / browser / stream / desktop player"]
 
-  SK --> Capture
-  Snapshot --> Capture
-  Capture --> Viewer
-  Bite --> Capture
-  Bite --> Providers
+  Locations["Location Editor"] --> Tides["Tidal Database"]
+  Locations --> Weather["Weather Database"]
+  Locations --> Traffic
+  Locations --> Display
+  Locations --> Planning
+  Tides --> Display
+  Tides --> Planning
+  Weather --> Planning
+
+  SK --> Voyages["Voyages: record / replay / review"]
+  Snapshot --> Voyages
+  Console --> BITE
+  BITE --> Traffic
+  BITE --> Navigation
+  BITE --> Voyages

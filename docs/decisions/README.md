@@ -14,3 +14,5 @@ Decisions are proposed until explicitly accepted.
 - [ADR-010: Use a source-aware own-vessel navigation reference](010-source-aware-navigation-reference.md)
 - [ADR-011: Replay physical sensor sources and capture recomputed child voyages](011-sensor-source-replay.md)
 - [ADR-012: Standardise map controls around Display and a shared map core](012-shared-map-controls.md)
+- [ADR-013: Use Locations as the only spatial catalogue](013-locations-only-contract.md)
+- [ADR-014: Separate spatial, tide and weather ownership](014-separate-spatial-tide-weather-ownership.md)

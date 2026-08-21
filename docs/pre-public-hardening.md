@@ -1,5 +1,8 @@
 # AJRM Marine Pre-Public Hardening
 
+> Historical pre-merger checklist. The active package inventory is maintained
+> in [AJRM Marine Current Architecture](current-architecture.md).
+
 This checklist records the public-release expectations for AJRM Marine Signal K
 plugins before broader announcement or npm/AppStore publication.
 

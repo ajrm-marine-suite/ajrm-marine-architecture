@@ -1,5 +1,8 @@
 # AJRM Marine Implementation and Verification Plan
 
+> Historical planning record. For current package ownership and verification
+> boundaries, see [AJRM Marine Current Architecture](current-architecture.md).
+
 ## Current Objective
 
 Prepare the AJRM Marine public repositories for wider Signal K testing while
