@@ -17,3 +17,4 @@ Decisions are proposed until explicitly accepted.
 - [ADR-013: Use Locations as the only spatial catalogue](013-locations-only-contract.md)
 - [ADR-014: Separate spatial, tide and weather ownership](014-separate-spatial-tide-weather-ownership.md)
 - [ADR-015: Make Marine Planning the tidal-gate definition owner](015-planning-owned-tidal-gates.md)
+- [ADR-016: Keep tidal-gate planning data flat](016-flat-planning-tidal-gate-data.md)

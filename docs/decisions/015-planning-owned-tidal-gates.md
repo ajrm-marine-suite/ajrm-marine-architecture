@@ -3,6 +3,10 @@
 Status: accepted  
 Date: 2026-08-23
 
+ADR-016 retains this ownership split but supersedes the detailed definition
+revision/history, joined whole-gate CRUD, coordinated spatial deletion and
+tombstone-transfer rules with a flat constants-only Planning model.
+
 ## Context
 
 A tidal gate has two distinct records with different ownership and lifecycles:
