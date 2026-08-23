@@ -45,18 +45,28 @@ another Signal K plugin.
   coordinates, provenance, review state, revision history or tombstone. Their
   six timing values are four direction-specific spring/neap HW offsets plus
   shared `springSlack` and `neapSlack` durations used for both flood and ebb.
-  Its in-process gate-row surface is the explicit
-  `ajrm-marine-planning-service-v2` contract. It also owns gate-passage
-  calculations. Tidal Database owns no gate rows or gate transfer contract.
+  All six use canonical minute-precision `HH:MM` with at least two hour digits;
+  only the four HW offsets may be signed. Current `notes` remains editable, but
+  bundled and migrated rows start blank. The Tidal Gate Data view keeps this
+  wide row compact and uses two-line headings for longer calculation labels.
+  The durable catalogue, export and seed contracts are version 4. Its explicit
+  in-process surface is `ajrm-marine-planning-service-v3`, contract version 3,
+  and its joined gate-row surface is `ajrm-marine-planning-gate-rows-v3`. It
+  also owns gate-passage calculations. Tidal Database owns no gate rows or gate
+  transfer contract.
 - Planning serializes row writes, transfers and legacy conversion. Deleting a
   row changes Planning only. Location changes remain separate Location Editor
   operations.
-- Legacy conversion may omit and report a genuinely incomplete v0.7 row. A
-  complete v0.7 or v0.8 row with asymmetric flood/ebb slack is instead a
-  blocking conflict across startup conversion, delayed Tidal handoff and v0.8
-  compatibility import. The original/current catalogue stays unchanged, and a
-  blocked delayed source is not acknowledged. Planning's OpenAPI contract
-  documents the accepted v0.8 import envelope explicitly.
+- Legacy conversion may omit and report a genuinely incomplete v0.7 row, but
+  it converts timing values only when they are exact whole minutes and never
+  carries legacy source text into Notes. A v0.9/version 3 or v0.8/version 2
+  compatibility value must end in `:00`; conversion never rounds and clears
+  legacy Notes. A complete v0.7 or v0.8 row with asymmetric flood/ebb slack is
+  instead a blocking conflict across startup conversion, delayed Tidal handoff
+  and v0.8 compatibility import. The original/current catalogue stays
+  unchanged, and a blocked delayed source is not acknowledged. Planning's
+  OpenAPI contract documents the accepted version 4, v0.9/version 3 and
+  v0.8/version 2 transfer envelopes explicitly.
 - Location Editor's public mutations join that coordinator when Planning is
   available and reject a candidate that would orphan a live gate row. The
   operator deletes the Planning row first when a later spatial deletion is
