@@ -10,11 +10,11 @@ flowchart LR
   Notifications --> Display
   Audio --> Outputs["Speaker / browser / stream / desktop player"]
 
-  Locations["Location Editor"] --> Tides["Tidal Database"]
+  Locations["Location Editor<br/>Locations and gate geometry"] --> Tides["Tidal Database<br/>Providers, ports and caches"]
   Locations --> Weather["Weather Database"]
   Locations --> Traffic
   Locations --> Display
-  Locations --> Planning
+  Locations --> Planning["Marine Planning<br/>Gate definitions and planners"]
   Tides --> Display
   Tides --> Planning
   Weather --> Planning

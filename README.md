@@ -59,7 +59,8 @@ boundaries:
 - Own-vessel navigation reference selection, magnetic variation, compass/COG
   fallback, current/leeway provenance, and DR independence.
 - Simulator and BITE as repeatable test infrastructure.
-- Locations, Tidal Database, Weather Database and Marine Planning ownership.
+- Location-owned gate geometry, Planning-owned tidal-gate definitions, and
+  Tidal Database/Weather Database provider-data ownership.
 - Publication, AppStore readiness, and public repository expectations.
 
 ## Authorship

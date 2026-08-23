@@ -2,6 +2,7 @@
 
 Status: package-boundary migrations and retirement cleanup complete
 Started: 2026-08-07
+Current ownership table amended: 2026-08-23 by ADR-015
 
 ## Objective
 
@@ -46,9 +47,9 @@ do not justify permanent runtime branches.
 | Instrument Alerts | Retirement marker only | retired | Merged into Instruments in v0.8.0 |
 | Harbour Editor | Historical harbour editor | retired | Replaced by Location Editor |
 | Location Editor | Versioned spatial catalogue and anchoring assistance | active | Sole location/geometry owner |
-| Tidal Database | Tide providers, cache, port definitions and region relationships | active | Sole tidal-data owner |
+| Tidal Database | Tide providers, stations, caches, port definitions, region relationships and predictions | active | Sole tide-provider and prediction-data owner; no gate definitions |
 | Weather Database | Weather providers, cache and forecast resolution | active | Sole weather-data owner |
-| Marine Planning | Gate and anchor planning consumer | active | Read-only consumer of shared services |
+| Marine Planning | Durable tidal-gate definitions plus gate and anchor planning | active | Gate-definition CRUD/transfer owner and consumer of shared spatial, tide and weather services |
 | Simulator | Optional test data source | first pass complete | Retain separately |
 | Snapshot | Optional diagnostic evidence provider | first pass complete | Retain separately |
 | Pi Controller | Privileged Pi operations | first pass complete | Retain separately |
@@ -92,8 +93,14 @@ This preserves different failure and privilege domains. In particular:
 - Vessel Database remains independent of Traffic: persistent vessel identity
   enrichment and bulk administration have a different lifecycle and failure
   mode from live CPA/TCPA and collision-risk evaluation.
-- Location Editor remains the independent durable spatial provider. Tidal and
+- Location Editor remains the independent durable spatial provider. Marine
+  Planning owns tidal-gate constants and their revisions and transfer. Tidal and
   Weather Databases own their provider data and caches; Planning consumes them.
+- Whole-gate deletion is coordinated by Planning under its complete mutation
+  barrier, while Location Editor performs the optimistic spatial type removal;
+  concurrent Planning imports or restores cannot leave live orphan constants.
+- Generic Location writes and catalogue transfers use the same coordinator
+  while Planning is running, so they cannot bypass the live gate join guard.
 - Pi Controller remains isolated because it performs privileged host actions.
 - Simulator remains optional and removable from a sailing installation.
 
@@ -350,8 +357,9 @@ to test and recover.
 - Location imports accept only the versioned Locations catalogue contract.
   There is no runtime prefix matching, dual-write path or Harbour Editor
   compatibility provider.
-- Marine Planning consumes Locations, tide and weather services directly and
-  is exposed by Console as a current suite app.
+- Marine Planning consumes Locations, tide and weather services directly, owns
+  durable tidal-gate definitions and their CRUD/transfer, and is exposed by
+  Console as a current suite app.
 
 ### Simulator
 
