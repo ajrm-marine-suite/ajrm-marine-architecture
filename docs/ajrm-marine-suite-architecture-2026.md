@@ -3,7 +3,7 @@
 > Historical baseline dated 2026-08-08. The canonical current architecture is
 > [AJRM Marine Current Architecture](current-architecture.md).
 
-Status: current public beta architecture  
+Status: historical public beta architecture
 Date: 2026-08-08
 Applies to: AJRM Marine public repositories under `ajrm-marine-suite`
 

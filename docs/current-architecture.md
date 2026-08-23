@@ -1,6 +1,6 @@
 # AJRM Marine Current Architecture
 
-Status: canonical public-beta architecture  
+Status: canonical current-alpha architecture
 Updated: 2026-08-23
 
 AJRM Marine is a set of focused Signal K plugins joined by explicit, versioned
@@ -40,6 +40,16 @@ another Signal K plugin.
   coordinates as identity. Tidal Database keys predictions and region
   relationships by Location IDs. Weather Database may use a Location as
   forecast context but does not copy the catalogue.
+- Tidal Database presents Location-owned port and region names through exact
+  UUID joins. Any retained label used during temporary Location-service loss is
+  an explicitly non-authoritative cache fallback, not a separately editable
+  name. Tidal durable definitions version 3 stores that fallback as
+  `cachedLocationName`; joined projections report whether their displayed name
+  came from `location` or `cached`. Its gate-free service, status and diagnostic
+  surfaces use contract major version 2. Standard-port and secondary-port
+  classifications are mutually exclusive, and a correction definition is
+  operational only while its complete parent chain is valid and
+  provider-backed.
 - Marine Planning is the sole durable owner of flat tidal-gate calculation
   rows, constants-only CRUD and row export/import/merge. Rows contain no name,
   coordinates, provenance, review state, revision history or tombstone. Their
@@ -66,11 +76,14 @@ another Signal K plugin.
   and v0.8 compatibility import. The original/current catalogue stays
   unchanged, and a blocked delayed source is not acknowledged. Planning's
   OpenAPI contract documents the accepted version 4, v0.9/version 3 and
-  v0.8/version 2 transfer envelopes explicitly.
-- Location Editor's public mutations join that coordinator when Planning is
-  available and reject a candidate that would orphan a live gate row. The
-  operator deletes the Planning row first when a later spatial deletion is
-  intended.
+  v0.8/version 2 transfer envelopes explicitly. Until acknowledgement, Tidal
+  Database continues to serialize the quarantined source as a genuinely
+  rollback-readable legacy v1 file; acknowledgement is the v3 cutover.
+- Location Editor's public and shared-service mutations join that coordinator
+  when Planning is available. A candidate must retain each live gate UUID as a
+  `tidalGate` and each live `referencePortLocationId` as a
+  `tidalStandardPort`. The operator deletes or updates the Planning row first
+  when a later spatial deletion or reclassification is intended.
 - Tidal Database and Weather Database alone contact their providers and own
   provider caches. Display and Planning do not implement private provider
   access or caches.
@@ -82,6 +95,19 @@ another Signal K plugin.
   Database and Weather Database resolve independently; Weather Database returns
   the selected Location or cached coordinate group and its distance from the
   resolved vessel position.
+- Own-position freshness is evaluated from the position sample time with a
+  30-second threshold; the longer AIS target-retention period never turns
+  an aged own-position sample into a fresh fix. Programmatic startup centring
+  preserves vessel follow, while an actual operator pan still pauses it.
+- Planning accepts fetched tide events only when the resolver explicitly names
+  the exact requested reference-port UUID. The tide response carries the
+  reference levels associated with those events, so a refresh cannot mix new
+  events with an earlier level snapshot.
+- Weather Database coalesces simultaneous work for one provider/cache key,
+  replaces cache files atomically with unique temporary paths and reports cache
+  fallback according to the selected primary forecast. Planning's ordinary gate
+  weather/tide reads are cache-aware; its deliberate provider refresh routes
+  require Signal K read/write or administrator access.
 - Traffic alone decides encounter meaning and collision wording. Notifications
   transports provider meaning; Audio schedules it; displays do not infer it
   from prose.
@@ -98,7 +124,9 @@ The tidal-gate ownership split and flat row refinement are recorded in
 [ADR-015](decisions/015-planning-owned-tidal-gates.md) and
 [ADR-016](decisions/016-flat-planning-tidal-gate-data.md). Position-first
 environment presentation and nearest weather-cache selection are recorded in
-[ADR-017](decisions/017-position-first-display-environment.md).
+[ADR-017](decisions/017-position-first-display-environment.md). The explicit
+v2 Tidal boundary and cross-owner integrity checks are recorded in
+[ADR-018](decisions/018-harden-planning-environment-contracts.md).
 
 ## Required and optional runtime
 

@@ -61,7 +61,9 @@ boundaries:
   fallback, current/leeway provenance, and DR independence.
 - Simulator and BITE as repeatable test infrastructure.
 - Location-owned gate geometry, Planning-owned flat tidal-gate calculation rows, and
-  Tidal Database/Weather Database provider-data ownership.
+  Tidal Database/Weather Database provider-data ownership, including exact
+  reference-port joins, explicit Tidal v2 contracts and position/cache
+  freshness semantics.
 - Publication, AppStore readiness, and public repository expectations.
 
 ## Authorship
@@ -76,7 +78,12 @@ community.
 
 ## Safety
 
-AJRM Marine is beta/test software. It is intended to assist situational
-awareness and software experimentation. It must not be relied upon as the sole
-means of navigation, collision avoidance, anchoring safety, GPS integrity
-monitoring, or vessel control.
+> This software is Alpha Release and has not been tested in live environments
+> and must not be relied upon for navigation or safety. The Authors do not
+> accept any responsibility for loss or damage as a result of using this
+> software.
+
+AJRM Marine is intended to assist situational awareness and software
+experimentation. It must not be relied upon as the sole means of navigation,
+collision avoidance, anchoring safety, GPS integrity monitoring, or vessel
+control.

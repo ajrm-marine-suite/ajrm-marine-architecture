@@ -1,7 +1,7 @@
 # AJRM Marine Suite Compatibility Contracts
 
 Status: cutover contract baseline
-Date: 2026-06-20
+Date: 2026-08-23
 
 These contracts let the suite evolve additively after the Traffic cutover.
 A component may add fields, but it must not remove or reinterpret fields within
@@ -500,3 +500,49 @@ notifications, broker projection, Traffic projection, and Audio timeline paths.
 - When an enhanced projection is unavailable or unsupported, consumers fall
   back to the documented standard Signal K surface without silently
   reconstructing provider-specific policy.
+
+## 9. Shared planning and environment contracts
+
+The current Tidal Database in-process, status and diagnostic surfaces are:
+
+```text
+ajrm-marine-tidal-database-service-v2
+ajrm-marine-tidal-database-status-v2
+ajrm-marine-tidal-database-diagnostics-v2
+```
+
+Version 2 is the gate-free boundary. It owns provider/station data, port
+prediction definitions, secondary corrections, region relationships, cache and
+tide resolution. The removed gate methods are not an additive v1 change.
+
+Tidal durable definitions version 3 replaces the old ambiguous duplicated
+`name` with `cachedLocationName`. Service projections obtain `name` from the
+exact Location UUID when available and expose `nameSource: "location"`; only a
+temporary unavailable join may expose the stored fallback with
+`nameSource: "cached"`. Definition writes validate the required Location type
+and do not accept an independently editable display name. A port Location has
+exactly one of `tidalStandardPort` or `tidalSecondaryPort`; a correction port is
+operational only when its complete parent chain remains joined and terminates
+at a provider-backed standard port.
+
+While retired gate rows await verified Planning acknowledgement, Tidal
+Database keeps the quarantine file genuinely readable as the legacy v1
+contract, including legacy `name` fields. Only acknowledgement rewrites it as
+the gate-free v3 durable contract.
+
+Planning's Location-mutation guard protects both exact UUID joins in every live
+flat row: the gate remains `tidalGate` and its reference port remains
+`tidalStandardPort`. A consumer that does not understand the guard's required
+reference-port protection must not claim that a catalogue mutation is safe.
+
+The Planning tide endpoint verifies the resolver contract and exact selected
+port before returning events. Its response repeats the exact reference-port UUID
+and name and includes the associated reference levels. Consumers compare these
+explicit fields; they do not infer the port from station name, event content or
+the gate position.
+
+Display distinguishes `fresh` and `last-known` from explicit own-position age
+against a 30-second limit; missing age evidence fails closed as `last-known`.
+Weather Database identifies whether the selected primary forecast is network,
+exact-cache fallback or nearest-cache fallback. A contributing secondary cache
+does not change the primary forecast's resolution mode.
