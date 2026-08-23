@@ -52,7 +52,8 @@ boundaries:
   supersession.
 - Audio, Piper rendering, speaker/stream/desktop-player delivery, and audible
   timeline rules.
-- Display, Console's Alerts view, OpenCPN message display, and other visual clients.
+- Display's position-first chart, tide and weather presentation, Console's
+  Alerts view, OpenCPN message display, and other visual clients.
 - Voyages, Snapshot, replay, recapture, review, and debug workflows.
 - Navigation Integrity and its DR Plotter, including lost-GPS fallback, independent DR,
   plotted fixes, and diagnostics.

@@ -16,13 +16,13 @@ deliberate commands. Signal K remains the public integration layer.
 | Vessel Database | Durable vessel identity, classification and operator notes |
 | Notifications | Generic notification lifecycle, ordering, deduplication and audio requests |
 | Audio | One authoritative audio queue/timeline and all playback/stream delivery |
-| Display | Live chart, own vessel, traffic, routes, locations, profiles and tide presentation |
+| Display | Live chart, own vessel, traffic, routes, locations, profiles, tide and weather presentation |
 | Navigation Integrity | Navigation Reference, GNSS trust, operational/integrity DR and the DR Plotter |
 | Instruments | Instrument presentation, derived instrument paths and instrument alerts |
 | Voyages (Capture) | Canonical recording, replay, recapture, recovery, bundles and voyage review |
 | Location Editor | Versioned spatial catalogue: IDs, names, types, coordinates/geometry, anchoring attributes and profile areas, including tidal-gate Locations |
 | Tidal Database | Tide-provider adapters, stations, port prediction definitions, secondary corrections, caches, tidal-region relationships and tide-prediction calculations; no gate definitions |
-| Weather Database | Provider adapters, provider-separated durable caches and forecast resolution |
+| Weather Database | Provider adapters, provider-separated durable caches, nearest-Location resolution and nearest-cache fallback |
 | Marine Planning | Durable flat tidal-gate calculation rows, constants-only CRUD and export/import/merge; gate-passage and anchor planning over Locations, tide and weather services |
 | Snapshot | Point-in-time suite diagnostics, including shared location/tide/weather/planning evidence |
 | Simulator | Explicit test source for vessel, AIS, environment, route and GNSS scenarios |
@@ -74,6 +74,14 @@ another Signal K plugin.
 - Tidal Database and Weather Database alone contact their providers and own
   provider caches. Display and Planning do not implement private provider
   access or caches.
+- Display waits until it has resolved a fresh or retained last-known own-vessel
+  position before centring and revealing its initial chart or resolving
+  automatic environment data. It centres first and only then requests tide and
+  weather. After a bounded wait with no usable position it may reveal a no-GPS
+  chart, but chart centre is never invented as environment context. Tidal
+  Database and Weather Database resolve independently; Weather Database returns
+  the selected Location or cached coordinate group and its distance from the
+  resolved vessel position.
 - Traffic alone decides encounter meaning and collision wording. Notifications
   transports provider meaning; Audio schedules it; displays do not infer it
   from prose.
@@ -88,7 +96,9 @@ another Signal K plugin.
 
 The tidal-gate ownership split and flat row refinement are recorded in
 [ADR-015](decisions/015-planning-owned-tidal-gates.md) and
-[ADR-016](decisions/016-flat-planning-tidal-gate-data.md).
+[ADR-016](decisions/016-flat-planning-tidal-gate-data.md). Position-first
+environment presentation and nearest weather-cache selection are recorded in
+[ADR-017](decisions/017-position-first-display-environment.md).
 
 ## Required and optional runtime
 

@@ -18,3 +18,4 @@ Decisions are proposed until explicitly accepted.
 - [ADR-014: Separate spatial, tide and weather ownership](014-separate-spatial-tide-weather-ownership.md)
 - [ADR-015: Make Marine Planning the tidal-gate definition owner](015-planning-owned-tidal-gates.md)
 - [ADR-016: Keep tidal-gate planning data flat](016-flat-planning-tidal-gate-data.md)
+- [ADR-017: Resolve Display environment data from a resolved vessel position](017-position-first-display-environment.md)
