@@ -42,12 +42,21 @@ another Signal K plugin.
   forecast context but does not copy the catalogue.
 - Marine Planning is the sole durable owner of flat tidal-gate calculation
   rows, constants-only CRUD and row export/import/merge. Rows contain no name,
-  coordinates, provenance, review state, revision history or tombstone. It also
-  owns gate-passage calculations. Tidal Database owns no gate rows or gate
-  transfer contract.
+  coordinates, provenance, review state, revision history or tombstone. Their
+  six timing values are four direction-specific spring/neap HW offsets plus
+  shared `springSlack` and `neapSlack` durations used for both flood and ebb.
+  Its in-process gate-row surface is the explicit
+  `ajrm-marine-planning-service-v2` contract. It also owns gate-passage
+  calculations. Tidal Database owns no gate rows or gate transfer contract.
 - Planning serializes row writes, transfers and legacy conversion. Deleting a
   row changes Planning only. Location changes remain separate Location Editor
   operations.
+- Legacy conversion may omit and report a genuinely incomplete v0.7 row. A
+  complete v0.7 or v0.8 row with asymmetric flood/ebb slack is instead a
+  blocking conflict across startup conversion, delayed Tidal handoff and v0.8
+  compatibility import. The original/current catalogue stays unchanged, and a
+  blocked delayed source is not acknowledged. Planning's OpenAPI contract
+  documents the accepted v0.8 import envelope explicitly.
 - Location Editor's public mutations join that coordinator when Planning is
   available and reject a candidate that would orphan a live gate row. The
   operator deletes the Planning row first when a later spatial deletion is
