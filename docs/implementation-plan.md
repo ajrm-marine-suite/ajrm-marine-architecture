@@ -16,12 +16,41 @@ Viewer form the repeatable test and diagnostic loop.
 Before tagging or publishing a package:
 
 1. The local working tree is clean except for the intended change.
-2. `npm test` passes.
-3. `npm pack --dry-run` includes runtime assets and excludes private material.
-4. The package metadata includes Signal K keywords, display metadata, repository
+2. If the package has adopted static checking, `npm run typecheck` passes with
+   `noEmit` and is included in the normal `npm test` path.
+3. `npm test` passes.
+4. `npm pack --dry-run` includes runtime assets and excludes private material.
+5. The package metadata includes Signal K keywords, display metadata, repository
    links, author, licence, and files.
-5. The GitHub Actions Signal K plugin CI run is green.
-6. A fresh Signal K install can activate the package with schema defaults.
+6. Production dependency audit findings are reviewed. Fixable vulnerabilities
+   are updated and regression-tested; any accepted exception records the
+   affected path, exposure and compensating control.
+7. The GitHub Actions Signal K plugin CI run is green.
+8. A fresh Signal K install can activate the package with schema defaults and
+   without development dependencies or a compile step.
+
+## Incremental Static-Checking Plan
+
+1. Use Weather Database as the pilot for `checkJs`, JSDoc and `noEmit`.
+2. When another active plugin receives material work, add or extend checking
+   over the touched coherent module rather than performing a bulk rewrite.
+3. Prioritise versioned cross-plugin contracts, persisted data shapes,
+   provider adapters and safety-related calculation inputs.
+4. Add useful JSDoc to new and materially changed shared shapes, while retaining
+   runtime validation at every untrusted boundary.
+5. Tighten strictness only in reviewable, tested increments.
+6. Keep a full TypeScript build or runtime conversion outside this plan unless
+   separately reviewed and accepted.
+
+## Completed Dependency-Security Action
+
+- Capture `v0.10.17` updates and locks `adm-zip` 0.6.1, outside the affected
+  range for GHSA-vwc7-r8mq-g2x9. Its full 97-test ZIP/replay suite, production
+  dependency audit, package dry-run and isolated production-style install all
+  passed before release.
+- Capture's production use reads a named ZIP entry into memory and does not call
+  the advisory's affected disk-extraction methods. Voyage extraction continues
+  to use `yauzl`; no ZIP-handling behaviour changed in the security release.
 
 ## Suite Verification Gates
 

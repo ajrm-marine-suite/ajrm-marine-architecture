@@ -1,7 +1,7 @@
 # AJRM Marine Current Architecture
 
 Status: canonical current-alpha architecture
-Updated: 2026-08-23
+Updated: 2026-09-23
 
 AJRM Marine is a set of focused Signal K plugins joined by explicit, versioned
 contracts. Backend plugins own domain state; browser apps render it and send
@@ -161,6 +161,22 @@ and Tidal Database prediction ports; Planning's three shared services; Snapshot
 shared-data evidence; Traffic → Notifications → Audio → Display flow;
 Capture bundle round trips; and Navigation Integrity/DR behaviour. Package unit
 tests remain responsible for exhaustive internal calculations.
+
+## Development-time contract checking
+
+The suite retains JavaScript as its deployed Signal K runtime while adopting
+TypeScript `checkJs` and JSDoc types incrementally. When an active package is
+being materially changed, static checking should be added or extended over a
+coherent area, prioritising shared contracts and safety-relevant boundaries.
+The checker is a development-only, `noEmit` release gate: production packages
+must still install without development dependencies and without a compile
+step.
+
+Static types do not replace runtime validation of provider, file, HTTP or
+cross-plugin input, and they do not validate marine-domain assumptions. Those
+assumptions remain explicit review and test matters. The policy and staged
+verification are recorded in
+[ADR-020](decisions/020-incremental-javascript-static-checking.md).
 
 ## Safety
 

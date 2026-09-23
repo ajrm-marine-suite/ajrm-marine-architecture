@@ -21,3 +21,4 @@ Decisions are proposed until explicitly accepted.
 - [ADR-017: Resolve Display environment data from a resolved vessel position](017-position-first-display-environment.md)
 - [ADR-018: Harden planning and environment contract boundaries](018-harden-planning-environment-contracts.md)
 - [ADR-019: Continue collision assessment with bounded explicit estimates](019-bounded-estimated-collision-inputs.md)
+- [ADR-020: Add static contract checking without changing the JavaScript runtime](020-incremental-javascript-static-checking.md)
